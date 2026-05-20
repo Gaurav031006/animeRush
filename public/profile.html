@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Profile — AnimeRush</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.profile-head{
+  padding:40px 20px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+}
+.profile-card{
+  max-width:1100px;
+  margin:auto;
+}
+.profile-card h1{
+  font-family:'Rajdhani',sans-serif;
+  font-size:40px;
+}
+.watch-list{
+  max-width:1100px;
+  margin:30px auto;
+  padding:0 20px;
+}
+.history-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:14px;
+}
+.history-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  cursor:pointer;
+}
+.history-card h3{
+  font-size:15px;
+  margin-bottom:8px;
+}
+.history-card p{
+  color:var(--text3);
+  font-size:13px;
+}
+.logout-btn{
+  margin-top:14px;
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  padding:10px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:700;
+}
+</style>
+</head>
+
+<body>
+<div id="navbar"></div>
+
+<section class="profile-head">
+  <div class="profile-card">
+    <h1 id="profileName">Profile</h1>
+    <p style="color:var(--text3)">Your anime and manga watching history.</p>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</section>
+
+<section class="watch-list">
+  <div class="sec-head">
+    <div class="sec-title">▶ Continue Watching / Reading</div>
+  </div>
+
+  <div class="history-grid" id="historyGrid"></div>
+</section>
+
+<footer id="footer"></footer>
+
+<script src="app.js"></script>
+<script>
+const email = localStorage.getItem("ar_current_user");
+
+if(!email){
+  location.href = "login.html";
+}
+
+const user = JSON.parse(localStorage.getItem("ar_user_" + email) || "{}");
+document.getElementById("profileName").textContent = "Hi, " + (user.name || "User");
+
+function loadHistory(){
+  const key = "ar_history_" + email;
+  const data = JSON.parse(localStorage.getItem(key) || "[]");
+
+  const grid = document.getElementById("historyGrid");
+
+  if(!data.length){
+    grid.innerHTML = `<p style="color:var(--text3)">No history yet.</p>`;
+    return;
+  }
+
+  grid.innerHTML = data.reverse().map(item => `
+    <div class="history-card" onclick="location.href='${item.url}'">
+      <h3>${item.title}</h3>
+      <p>${item.type} ${item.ep ? "• Episode " + item.ep : ""}</p>
+      <p>${new Date(item.time).toLocaleString()}</p>
+    </div>
+  `).join("");
+}
+
+function logout(){
+  localStorage.removeItem("ar_current_user");
+  location.href = "login.html";
+}
+
+loadHistory();
+</script>
+</body>
+</html>

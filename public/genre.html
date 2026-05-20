@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title id="pageTitle">Anime by Genre — AnimeRush</title>
+<meta name="description" id="pageDesc" content="Browse anime by genre on AnimeRush. Find action, romance, fantasy, isekai and more."/>
+<meta name="robots" content="index,follow"/>
+<link rel="stylesheet" href="style.css"/>
+
+<style>
+.genre-hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:38px 0}
+.genre-hero h1{font-family:'Rajdhani',sans-serif;font-size:38px;font-weight:700;margin-bottom:8px}
+.genre-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:8px}
+.genre-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.genre-card:hover{transform:translateY(-4px);border-color:rgba(230,57,70,.4)}
+.genre-icon{font-size:32px;margin-bottom:8px}
+.genre-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700}
+.genre-count{font-size:12px;color:var(--text3);margin-top:3px}
+.gc-action{background:linear-gradient(135deg,rgba(230,57,70,.08),transparent)}
+.gc-adventure{background:linear-gradient(135deg,rgba(76,201,240,.08),transparent)}
+.gc-comedy{background:linear-gradient(135deg,rgba(255,209,102,.08),transparent)}
+.gc-drama{background:linear-gradient(135deg,rgba(6,214,160,.08),transparent)}
+.gc-fantasy{background:linear-gradient(135deg,rgba(114,9,183,.08),transparent)}
+.gc-horror{background:linear-gradient(135deg,rgba(20,20,20,.4),transparent)}
+.gc-romance{background:linear-gradient(135deg,rgba(236,72,153,.08),transparent)}
+.gc-scifi{background:linear-gradient(135deg,rgba(67,97,238,.08),transparent)}
+</style>
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<div id="genreHub">
+  <div class="genre-hero">
+    <div class="page-wrap">
+      <div class="breadcrumb" style="padding-top:0;margin-bottom:12px">
+        <a href="index.html">Home</a> › <span>Genre</span>
+      </div>
+
+      <h1>🎭 Browse by Genre</h1>
+      <p style="color:var(--text3);font-size:14px">
+        Pick a genre to explore thousands of anime titles.
+      </p>
+    </div>
+  </div>
+
+  <div class="page-wrap" style="padding-top:28px;padding-bottom:50px">
+    <div class="genre-cards" id="genreCardGrid"></div>
+  </div>
+</div>
+
+<div id="genreDetail" style="display:none">
+  <div class="genre-hero">
+    <div class="page-wrap">
+      <div class="breadcrumb" style="padding-top:0;margin-bottom:12px">
+        <a href="index.html">Home</a> ›
+        <a href="genre.html">Genre</a> ›
+        <span id="detailGenreName"></span>
+      </div>
+
+      <h1 id="detailTitle">Genre Anime</h1>
+      <p style="color:var(--text3);font-size:14px" id="detailDesc"></p>
+    </div>
+  </div>
+
+  <div class="page-wrap" style="padding-top:24px;padding-bottom:50px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+      <select class="filter-sel" id="gSort" onchange="loadGenreAnime(1)">
+        <option value="score">Top Rated</option>
+        <option value="popularity">Most Popular</option>
+        <option value="start_date">Newest</option>
+        <option value="title">A–Z</option>
+      </select>
+
+      <select class="filter-sel" id="gType" onchange="loadGenreAnime(1)">
+        <option value="">All Types</option>
+        <option value="tv">TV Series</option>
+        <option value="movie">Movie</option>
+        <option value="ova">OVA</option>
+        <option value="ona">ONA</option>
+      </select>
+
+      <select class="filter-sel" id="gStatus" onchange="loadGenreAnime(1)">
+        <option value="">Any Status</option>
+        <option value="airing">Currently Airing</option>
+        <option value="complete">Finished</option>
+        <option value="upcoming">Upcoming</option>
+      </select>
+    </div>
+
+    <div style="font-size:14px;color:var(--text3);margin-bottom:16px" id="genreResultInfo"></div>
+    <div class="grid-lg" id="genreGrid"></div>
+    <div class="pagination" id="genrePagination"></div>
+  </div>
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+
+<script>
+const ALL_GENRES = [
+  {id:1,name:"Action",icon:"⚔️",cls:"gc-action",desc:"High-intensity battles, fights and adrenaline-pumping adventures.",count:"4,800+"},
+  {id:2,name:"Adventure",icon:"🗺️",cls:"gc-adventure",desc:"Epic journeys, exploration and discovery across unknown worlds.",count:"3,200+"},
+  {id:4,name:"Comedy",icon:"😂",cls:"gc-comedy",desc:"Laugh-out-loud moments, gags and wholesome fun.",count:"4,100+"},
+  {id:8,name:"Drama",icon:"🎭",cls:"gc-drama",desc:"Emotional storytelling, complex characters and deep narratives.",count:"2,900+"},
+  {id:10,name:"Fantasy",icon:"🧙",cls:"gc-fantasy",desc:"Magic, mythical creatures and extraordinary worlds.",count:"3,700+"},
+  {id:14,name:"Horror",icon:"👻",cls:"gc-horror",desc:"Spine-chilling terror, supernatural threats and dark atmospheres.",count:"800+"},
+  {id:7,name:"Mystery",icon:"🔍",cls:"",desc:"Mind-bending puzzles, investigations and shocking revelations.",count:"1,100+"},
+  {id:22,name:"Romance",icon:"💕",cls:"gc-romance",desc:"Heartwarming love stories, relationship drama and sweet moments.",count:"2,600+"},
+  {id:24,name:"Sci-Fi",icon:"🚀",cls:"gc-scifi",desc:"Futuristic technology, space exploration and scientific concepts.",count:"1,500+"},
+  {id:36,name:"Slice of Life",icon:"🌸",cls:"",desc:"Everyday life, relatable moments and heartwarming daily stories.",count:"2,300+"},
+  {id:37,name:"Supernatural",icon:"✨",cls:"gc-fantasy",desc:"Paranormal abilities, spirits and otherworldly phenomena.",count:"2,100+"},
+  {id:30,name:"Sports",icon:"⚽",cls:"",desc:"Competitive spirit, team dynamics and sporting excellence.",count:"600+"},
+  {id:17,name:"Martial Arts",icon:"🥋",cls:"gc-action",desc:"Hand-to-hand combat, training arcs and martial arts mastery.",count:"500+"},
+  {id:28,name:"Mecha",icon:"🤖",cls:"gc-scifi",desc:"Giant robots, mechanical suits and futuristic warfare.",count:"700+"},
+  {id:23,name:"School",icon:"🏫",cls:"",desc:"Student life, school clubs, friendships and coming-of-age stories.",count:"2,800+"},
+  {id:13,name:"Historical",icon:"📜",cls:"",desc:"Period dramas set in historical eras from ancient to modern times.",count:"600+"},
+  {id:38,name:"Military",icon:"🪖",cls:"gc-action",desc:"War, strategy and the realities of military life and conflict.",count:"400+"},
+  {id:35,name:"Harem",icon:"🌺",cls:"gc-romance",desc:"Multiple romantic interests and harem-style relationship dynamics.",count:"700+"},
+  {id:27,name:"Shounen",icon:"👊",cls:"gc-action",desc:"Young male protagonists, power-ups and never-give-up spirit.",count:"5,200+"},
+  {id:42,name:"Seinen",icon:"🎯",cls:"",desc:"Mature themes for adult audience — complex plots and realism.",count:"1,800+"},
+  {id:25,name:"Shoujo",icon:"🌷",cls:"gc-romance",desc:"Romance and coming-of-age stories targeted at young girls.",count:"1,400+"},
+  {id:18,name:"Music",icon:"🎵",cls:"gc-comedy",desc:"Music, bands, idols and the pursuit of musical dreams.",count:"300+"},
+  {id:40,name:"Psychological",icon:"🧠",cls:"",desc:"Mind games, unreliable narrators and psychological tension.",count:"600+"},
+  {id:41,name:"Thriller",icon:"😰",cls:"",desc:"Suspense, tension and edge-of-your-seat storytelling.",count:"400+"}
+];
+
+const urlParams = new URLSearchParams(location.search);
+const activeGenreId = urlParams.get("id");
+
+let gPage = 1;
+let gTotalPages = 1;
+
+if(activeGenreId){
+  showGenreDetail(activeGenreId);
+}else{
+  renderGenreCards();
+}
+
+function renderGenreCards(){
+  document.getElementById("genreHub").style.display = "block";
+  document.getElementById("genreDetail").style.display = "none";
+
+  document.getElementById("genreCardGrid").innerHTML = ALL_GENRES.map(function(g){
+    return `
+      <div class="genre-card ${g.cls}" onclick="location.href='genre.html?id=${g.id}'">
+        <div class="genre-icon">${g.icon}</div>
+        <div class="genre-name">${g.name}</div>
+        <div class="genre-count">${g.count} anime</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function showGenreDetail(id){
+  document.getElementById("genreHub").style.display = "none";
+  document.getElementById("genreDetail").style.display = "block";
+
+  const genre = ALL_GENRES.find(function(g){
+    return String(g.id) === String(id);
+  }) || {
+    id:id,
+    name:"Genre",
+    icon:"🎭",
+    desc:""
+  };
+
+  document.getElementById("detailGenreName").textContent = genre.name;
+  document.getElementById("detailTitle").textContent = `${genre.icon || "🎭"} ${genre.name} Anime`;
+  document.getElementById("detailDesc").textContent = genre.desc || "";
+
+  document.title = `${genre.name} Anime — AnimeRush`;
+  document.getElementById("pageDesc").content = `Browse ${genre.name} anime on AnimeRush. ${genre.desc || ""}`;
+
+  loadGenreAnime(1,id);
+}
+
+async function loadGenreAnime(page=1, genreId=null){
+  gPage = page;
+
+  const id = genreId || new URLSearchParams(location.search).get("id") || "1";
+
+  const grid = document.getElementById("genreGrid");
+  grid.innerHTML = skeletonCards(12);
+
+  const sort = document.getElementById("gSort").value || "score";
+  const type = document.getElementById("gType").value;
+  const status = document.getElementById("gStatus").value;
+
+  try{
+    const params = {
+      genres:id,
+      page:page,
+      limit:24,
+      order_by:sort,
+      sort:"desc",
+      sfw:true
+    };
+
+    if(type) params.type = type;
+    if(status) params.status = status;
+
+    const d = await Jikan.get("/anime",params);
+
+    const list = d.data || [];
+
+    gTotalPages = d.pagination?.last_visible_page || 1;
+
+    const total = d.pagination?.items?.total || list.length;
+
+    document.getElementById("genreResultInfo").innerHTML =
+      `<strong style="color:var(--text)">${list.length}</strong> of <strong style="color:var(--accent)">${total.toLocaleString()}</strong> ${document.getElementById("detailGenreName").textContent} anime`;
+
+    grid.innerHTML = list.length
+      ? list.map(function(a){ return makeAnimeCard(a,"jikan"); }).join("")
+      : '<p style="color:var(--text3);padding:20px;grid-column:1/-1">No anime found with these filters.</p>';
+
+    renderPagination(id);
+
+  }catch(e){
+    grid.innerHTML = `
+      <p style="color:var(--text3);padding:20px;grid-column:1/-1">
+        Failed to load. Please try again.<br>
+        <small>${e.message}</small>
+      </p>
+    `;
+    console.error(e);
+  }
+}
+
+function renderPagination(id){
+  const el = document.getElementById("genrePagination");
+
+  if(gTotalPages <= 1){
+    el.innerHTML = "";
+    return;
+  }
+
+  let html = "";
+
+  if(gPage > 1){
+    html += `<button class="page-btn" onclick="loadGenreAnime(${gPage - 1},'${id}')">◀ Prev</button>`;
+  }
+
+  const from = Math.max(1,gPage - 2);
+  const to = Math.min(gTotalPages,gPage + 2);
+
+  if(from > 1){
+    html += `<button class="page-btn" onclick="loadGenreAnime(1,'${id}')">1</button>`;
+    if(from > 2){
+      html += `<span style="color:var(--text3);padding:8px">…</span>`;
+    }
+  }
+
+  for(let i = from; i <= to; i++){
+    html += `<button class="page-btn${i === gPage ? " active" : ""}" onclick="loadGenreAnime(${i},'${id}')">${i}</button>`;
+  }
+
+  if(to < gTotalPages){
+    if(to < gTotalPages - 1){
+      html += `<span style="color:var(--text3);padding:8px">…</span>`;
+    }
+
+    html += `<button class="page-btn" onclick="loadGenreAnime(${gTotalPages},'${id}')">${gTotalPages}</button>`;
+  }
+
+  if(gPage < gTotalPages){
+    html += `<button class="page-btn" onclick="loadGenreAnime(${gPage + 1},'${id}')">Next ▶</button>`;
+  }
+
+  el.innerHTML = html;
+}
+
+function skeletonCards(n){
+  return Array(n).fill(`
+    <div class="skel-card">
+      <div class="skel-thumb skeleton" style="padding-bottom:148%"></div>
+      <div class="skel-line skeleton"></div>
+      <div class="skel-line short skeleton"></div>
+    </div>
+  `).join("");
+}
+</script>
+
+</body>
+</html>

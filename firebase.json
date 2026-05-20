@@ -1,0 +1,21 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/anime/**", "destination": "/pages/anime.html" },
+      { "source": "/watch/**", "destination": "/pages/watch.html" },
+      { "source": "/search", "destination": "/pages/search.html" },
+      { "source": "/genre/**", "destination": "/pages/genre.html" },
+      { "source": "/schedule", "destination": "/pages/schedule.html" },
+      { "source": "/movies", "destination": "/pages/movies.html" },
+      { "source": "**", "destination": "/index.html" }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [{ "key": "Cache-Control", "value": "max-age=604800" }]
+      }
+    ]
+  }
+}

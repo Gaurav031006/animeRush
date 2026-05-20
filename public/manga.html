@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Manga Reader — AnimeRush</title>
+<meta name="description" content="Read manga online for free — thousands of titles including One Piece, Demon Slayer, Berserk, Jujutsu Kaisen and more on AnimeRush."/>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── MANGA PAGE EXTRA STYLES ── */
+/* ===== MANGA PAGE FIXED UI ===== */
+
+.manga-hero{
+  background:linear-gradient(180deg,#07080d 0%,#050608 100%);
+  padding:70px 80px;
+  border-bottom:1px solid var(--border);
+}
+
+.manga-hero-inner{
+  max-width:1400px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px;
+  gap:70px;
+  align-items:center;
+}
+
+.manga-hero h1{
+  font-family:'Rajdhani',sans-serif;
+  font-size:64px;
+  line-height:1.08;
+  font-weight:800;
+  margin:0 0 18px;
+  color:var(--text);
+}
+
+.manga-hero h1 em{
+  color:var(--accent);
+  font-style:normal;
+}
+
+.manga-hero p{
+  color:var(--text2);
+  font-size:18px;
+  line-height:1.7;
+  max-width:650px;
+  margin:0 0 26px;
+}
+
+.manga-search-wrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  max-width:690px;
+}
+
+.manga-search-box{
+  display:flex;
+  flex:1;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  overflow:hidden;
+  height:58px;
+}
+
+.manga-search-box input{
+  flex:1;
+  background:transparent;
+  border:0;
+  outline:0;
+  color:var(--text);
+  font-size:16px;
+  padding:0 20px;
+}
+
+.manga-search-box button{
+  width:76px;
+  border:0;
+  background:var(--accent);
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.manga-search-wrap .btn-ghost{
+  height:58px;
+  padding:0 24px;
+  border-radius:12px;
+}
+
+.manga-hero-stats{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:22px;
+}
+
+.mhstat{
+  border-left:4px solid var(--accent);
+  padding-left:18px;
+}
+
+.mhstat .n{
+  font-family:'Rajdhani',sans-serif;
+  font-size:36px;
+  font-weight:800;
+  color:var(--text);
+  line-height:1;
+}
+
+.mhstat .l{
+  color:var(--text2);
+  font-size:15px;
+  margin-top:6px;
+}
+
+/* Tabs */
+.manga-tabs{
+  max-width:1400px;
+  margin:0 auto;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:14px 24px;
+}
+
+.mtab{
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  color:var(--text2);
+  border-radius:999px;
+  padding:9px 18px;
+  font-weight:600;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.mtab.active,
+.mtab:hover{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+
+/* Filters */
+.manga-filters{
+  max-width:1400px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:16px 24px;
+}
+
+.mfilt-label{
+  color:var(--text3);
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+}
+
+.mfpill{
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  color:var(--text2);
+  border-radius:999px;
+  padding:7px 15px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.mfpill.active,
+.mfpill:hover{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+
+/* Main layout */
+.manga-page-wrap{
+  max-width:1400px;
+  margin:0 auto;
+  padding:26px 24px 50px;
+}
+
+.manga-main-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 310px;
+  gap:26px;
+}
+
+.manga-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(165px,1fr));
+  gap:16px;
+}
+
+/* Cards */
+.mcard{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  position:relative;
+  transition:.25s;
+}
+
+.mcard:hover{
+  transform:translateY(-6px);
+  border-color:rgba(230,57,70,.45);
+  box-shadow:0 14px 34px rgba(0,0,0,.35);
+}
+
+.mcard-thumb{
+  position:relative;
+  padding-bottom:148%;
+  overflow:hidden;
+  background:var(--bg3);
+}
+
+.mcard-thumb img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:.35s;
+}
+
+.mcard:hover .mcard-thumb img{
+  transform:scale(1.06);
+}
+
+.mcard-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.9));
+  opacity:0;
+  transition:.25s;
+  display:flex;
+  align-items:flex-end;
+  padding:12px;
+}
+
+.mcard:hover .mcard-overlay{
+  opacity:1;
+}
+
+.mcard-read-btn{
+  width:100%;
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  padding:8px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.mbadge{
+  position:absolute;
+  top:9px;
+  left:9px;
+  font-size:10px;
+  font-weight:800;
+  padding:4px 8px;
+  border-radius:5px;
+  z-index:2;
+}
+
+.mbadge-free{background:var(--teal);color:#000}
+.mbadge-new{background:var(--accent);color:#fff}
+.mbadge-hot{background:#ff6b35;color:#fff}
+.mbadge-completed{background:var(--green);color:#000}
+
+.mcard-chaps-badge{
+  position:absolute;
+  bottom:9px;
+  right:9px;
+  background:rgba(0,0,0,.75);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  padding:3px 8px;
+  border-radius:5px;
+  z-index:2;
+}
+
+.mcard-info{
+  padding:11px 12px 14px;
+}
+
+.mcard-title{
+  font-size:13px;
+  font-weight:700;
+  line-height:1.35;
+  color:var(--text);
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  margin-bottom:6px;
+}
+
+.mcard-meta{
+  font-size:11px;
+  color:var(--text3);
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.mcard-rating{
+  color:var(--yellow);
+  font-weight:700;
+}
+
+.mcard-genre{
+  background:var(--bg4);
+  padding:2px 7px;
+  border-radius:5px;
+}
+
+/* Spotlight */
+.manga-spotlight{
+  display:flex;
+  gap:34px;
+  background:linear-gradient(90deg,#151622,#11131d);
+  border:1px solid var(--border);
+  border-radius:24px;
+  overflow:hidden;
+  padding:0;
+  align-items:stretch;
+}
+
+
+.ms-cover{
+  width:280px;
+  min-width:280px;
+  height:420px;
+  overflow:hidden;
+  flex-shrink:0;
+  background:var(--bg3);
+}
+
+.ms-cover img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.ms-content{
+  flex:1;
+  padding:32px 34px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.ms-cover-placeholder{
+  min-height:260px;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Rajdhani',sans-serif;
+  font-size:32px;
+  font-weight:800;
+  color:rgba(255,255,255,.25);
+}
+
+.ms-info{
+  padding:24px 28px;
+}
+
+.ms-badge{
+  display:inline-block;
+  background:rgba(230,57,70,.15);
+  border:1px solid rgba(230,57,70,.35);
+  color:var(--accent);
+  font-size:10px;
+  font-weight:800;
+  padding:4px 10px;
+  border-radius:5px;
+  margin-bottom:10px;
+}
+
+.ms-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:56px;
+  font-weight:800;
+  line-height:1.05;
+  margin-bottom:10px;
+}
+
+.ms-author,
+.ms-desc{
+  max-width:900px;
+  color:var(--text2);
+  font-size:16px;
+  line-height:1.8;
+}
+
+.ms-tags{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin:14px 0;
+}
+
+.ms-tag{
+  background:var(--bg4);
+  border:1px solid var(--border2);
+  color:var(--text2);
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:5px;
+}
+
+.ms-btns{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.ms-btn-read{
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  padding:10px 22px;
+  border-radius:9px;
+  font-weight:700;
+}
+
+.ms-btn-info{
+  background:transparent;
+  color:var(--text2);
+  border:1px solid var(--border2);
+  padding:10px 22px;
+  border-radius:9px;
+}
+
+/* Sidebar */
+.mwid{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:18px;
+}
+
+.mwid-title{
+  font-family:'Rajdhani',sans-serif;
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:12px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+
+.mwid-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+
+.mwid-item:last-child{
+  border-bottom:0;
+}
+
+.mwid-thumb{
+  width:44px;
+  height:60px;
+  border-radius:6px;
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+.mwid-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.mwid-item-title{
+  font-size:12px;
+  font-weight:700;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.mwid-item-meta{
+  font-size:11px;
+  color:var(--text3);
+  margin-top:4px;
+}
+
+.mwid-rank{
+  font-family:'Rajdhani',sans-serif;
+  width:22px;
+  font-size:18px;
+  font-weight:800;
+  color:var(--text3);
+  text-align:center;
+}
+
+.mwid-rank.r1{color:var(--yellow)}
+.mwid-rank.r2{color:#94a3b8}
+.mwid-rank.r3{color:#b45309}
+
+/* Pagination */
+.manga-pagination{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  padding:28px 0;
+}
+
+.mpbtn{
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  color:var(--text2);
+  border-radius:8px;
+  padding:8px 16px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.mpbtn:hover,
+.mpbtn.active{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+}
+
+/* Reader modal keep same */
+.reader-modal{position:fixed;inset:0;z-index:500;background:rgba(5,5,8,.97);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:.25s}
+.reader-modal.open{opacity:1;pointer-events:all}
+.reader-topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;gap:16px}
+.reader-close,.reader-settings-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer}
+.reader-manga-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:800;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reader-chap-nav{display:flex;align-items:center;gap:8px}
+.chap-nav-btn,.chap-select{background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:7px 12px;border-radius:8px}
+.reader-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:24px 16px;gap:3px}
+.reader-page-img{max-width:800px;width:100%;display:block}
+.reader-page-img.wide{max-width:1000px}
+.reader-page-img.narrow{max-width:600px}
+.reader-bottombar{background:var(--bg2);border-top:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:12px}
+
+/* Responsive */
+@media(max-width:1100px){
+  .manga-hero{padding:56px 24px}
+  .manga-hero-inner{grid-template-columns:1fr;gap:40px}
+  .manga-hero-stats{grid-template-columns:repeat(3,1fr)}
+  .manga-main-grid{grid-template-columns:1fr}
+  .manga-sidebar{display:none}
+}
+
+@media(max-width:768px){
+  .manga-hero h1{font-size:42px}
+  .manga-hero p{font-size:16px}
+  .manga-search-wrap{flex-direction:column;align-items:stretch}
+  .manga-search-wrap .btn-ghost{width:100%}
+  .manga-hero-stats{grid-template-columns:1fr}
+  .manga-spotlight{grid-template-columns:1fr}
+  .ms-cover{width:100%}
+  .manga-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+.mcard-chaps-badge{
+  position:absolute;
+  left:8px;
+  right:8px;
+  bottom:8px;
+  text-align:center;
+  background:rgba(0,0,0,.78);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  padding:5px 8px;
+  border-radius:6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.mcard-chap-count{
+  background:rgba(0,0,0,.8);
+  padding:5px 10px;
+  border-radius:6px;
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR (shared via app.js) -->
+<div id="navbar"></div>
+
+<!-- AD BAR -->
+<div style="background:var(--bg2);border-bottom:1px solid var(--border);text-align:center;padding:10px">
+  <div class="ad-slot ad-728">Advertisement — 728×90</div>
+</div>
+
+<!-- MANGA HERO -->
+<section class="manga-hero">
+  <div class="manga-hero-inner">
+    <div>
+      <h1>Read <em>Manga</em> Free<br>No Account Needed</h1>
+      <p>Thousands of manga — action, romance, fantasy, horror and more. Always free, always updated.</p>
+      <div class="manga-search-wrap">
+        <div class="manga-search-box">
+          <input type="text" id="mangaSearchInput" placeholder="Search manga title...">
+          <button onclick="doMangaSearch()">🔍</button>
+        </div>
+        <button class="btn-ghost" onclick="loadRandomManga()" style="white-space:nowrap">✨ Random</button>
+      </div>
+    </div>
+    <div class="manga-hero-stats">
+      <div class="mhstat"><div class="n">10,000+</div><div class="l">Manga Titles</div></div>
+      <div class="mhstat"><div class="n">Free</div><div class="l">Always</div></div>
+      <div class="mhstat"><div class="n">Daily</div><div class="l">New Chapters</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<div style="background:var(--bg2);border-bottom:1px solid var(--border)">
+  <div class="manga-tabs" id="mangaTabs">
+    <button class="mtab active" data-tab="trending" onclick="switchTab(this,'trending')">🔥 Trending</button>
+    <button class="mtab" data-tab="new" onclick="switchTab(this,'new')">🆕 New Releases</button>
+    <button class="mtab" data-tab="completed" onclick="switchTab(this,'completed')">✅ Completed</button>
+    <button class="mtab" data-tab="action" onclick="switchTab(this,'action')">⚔️ Action</button>
+    <button class="mtab" data-tab="romance" onclick="switchTab(this,'romance')">💕 Romance</button>
+    <button class="mtab" data-tab="fantasy" onclick="switchTab(this,'fantasy')">🧙 Fantasy</button>
+    <button class="mtab" data-tab="horror" onclick="switchTab(this,'horror')">💀 Horror</button>
+    <button class="mtab" data-tab="sports" onclick="switchTab(this,'sports')">🏆 Sports</button>
+  </div>
+</div>
+
+<!-- GENRE FILTER PILLS -->
+<div class="manga-filters" id="mangaFilters">
+  <span class="mfilt-label">Genre:</span>
+  <button class="mfpill active" data-genre="all" onclick="filterGenre(this,'all')">All</button>
+  <button class="mfpill" data-genre="Action" onclick="filterGenre(this,'Action')">Action</button>
+  <button class="mfpill" data-genre="Romance" onclick="filterGenre(this,'Romance')">Romance</button>
+  <button class="mfpill" data-genre="Fantasy" onclick="filterGenre(this,'Fantasy')">Fantasy</button>
+  <button class="mfpill" data-genre="Horror" onclick="filterGenre(this,'Horror')">Horror</button>
+  <button class="mfpill" data-genre="Seinen" onclick="filterGenre(this,'Seinen')">Seinen</button>
+  <button class="mfpill" data-genre="Shounen" onclick="filterGenre(this,'Shounen')">Shounen</button>
+  <button class="mfpill" data-genre="Isekai" onclick="filterGenre(this,'Isekai')">Isekai</button>
+  <button class="mfpill" data-genre="Sports" onclick="filterGenre(this,'Sports')">Sports</button>
+  <button class="mfpill" data-genre="Comedy" onclick="filterGenre(this,'Comedy')">Comedy</button>
+  <button class="mfpill" data-genre="Psychological" onclick="filterGenre(this,'Psychological')">Psychological</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="manga-page-wrap">
+  <div class="manga-main-grid">
+
+    <!-- LEFT: MANGA GRID -->
+    <div>
+      <!-- Spotlight -->
+      <div class="manga-spotlight" id="mangaSpotlight">
+        <div class="ms-cover">
+          <div class="ms-cover">
+  <img
+    src="assets/manga/berserk.jpg"
+    alt="Berserk"
+    style="width:100%;height:100%;object-fit:cover;"
+  >
+</div>
+        </div>
+        <div class="ms-info">
+          <div class="ms-badge">🔥 Editor's Pick</div>
+          <div class="ms-title">Berserk</div>
+          <div class="ms-author">by Kentaro Miura</div>
+          <div class="ms-desc">Follow Guts — the Black Swordsman — through a brutal medieval world filled with demons and destiny. A masterpiece of dark fantasy manga.</div>
+          <div class="ms-tags">
+            <span class="ms-tag">Dark Fantasy</span>
+            <span class="ms-tag">Seinen</span>
+            <span class="ms-tag">Action</span>
+            <span class="ms-tag">Tragedy</span>
+          </div>
+          <div class="ms-btns">
+            <button class="ms-btn-read" onclick="openReader({title:'Berserk',totalChapters:374,genre:'Seinen',rating:'9.9',cover:null})">📖 Read Now — Free</button>
+            <button class="ms-btn-info" onclick="showToast('Berserk — 374 chapters available')">ℹ️ More Info</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section header -->
+      <div class="sec-head" id="mangaSecHead">
+        <div class="sec-title" id="mangaSecTitle">🔥 Trending Manga</div>
+        <span id="mangaCount" style="font-size:12px;color:var(--text3)"></span>
+      </div>
+
+      <!-- Grid -->
+      <div class="manga-grid" id="mangaGrid"></div>
+
+      <!-- Pagination -->
+      <div class="manga-pagination" id="mangaPagination"></div>
+
+      <!-- Ad -->
+      <div style="padding:20px 0;text-align:center">
+        <div class="ad-slot ad-resp">Advertisement — Responsive AdSense</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="manga-sidebar">
+      <div style="text-align:center;margin-bottom:18px">
+        <div class="ad-slot ad-300">Ad 300×250</div>
+      </div>
+
+      <div class="mwid">
+        <div class="mwid-title">📈 Most Popular</div>
+        <div id="popularWidget"></div>
+      </div>
+
+      <div class="mwid">
+        <div class="mwid-title">🆕 Recently Added</div>
+        <div id="recentMangaWidget"></div>
+      </div>
+
+      <div style="text-align:center;margin-top:18px">
+        <div class="ad-slot" style="min-height:200px;line-height:200px">Ad 300×600</div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- ── MANGA READER MODAL ── -->
+<div class="reader-modal" id="readerModal">
+  <div class="reader-topbar">
+    <button class="reader-close" onclick="closeReader()" title="Close Reader">✕</button>
+    <div class="reader-manga-title" id="readerTitle">Loading...</div>
+    <div class="reader-chap-nav">
+      <button class="chap-nav-btn" id="prevChapBtn" onclick="changeChapter(-1)">‹ Prev</button>
+      <span class="reader-chap-label">Chapter</span>
+      <select class="chap-select" id="chapSelect" onchange="jumpToChapter(this.value)"></select>
+      <button class="chap-nav-btn" id="nextChapBtn" onclick="changeChapter(1)">Next ›</button>
+    </div>
+    <button class="reader-settings-btn" onclick="cycleWidth()" title="Change width">⇔</button>
+  </div>
+
+  <div class="reader-body" id="readerBody">
+    <div class="reader-loading">
+      <div class="reader-spinner"></div>
+      <p>Loading chapter...</p>
+    </div>
+  </div>
+
+  <div class="reader-bottombar">
+    <button class="chap-nav-btn" onclick="changeChapter(-1)">‹ Previous Chapter</button>
+    <div class="reader-progress">Chapter <span id="readerChapNum">1</span> of <span id="readerTotalChaps">?</span></div>
+    <button class="chap-nav-btn" onclick="changeChapter(1)">Next Chapter ›</button>
+  </div>
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   MANGA DATA — Jikan API (manga endpoint)
+   Uses real MyAnimeList manga data via Jikan
+   ═══════════════════════════════════════════ */
+
+const MANGA_GENRES = {
+  action:1, adventure:2, comedy:4, drama:8, fantasy:10,
+  horror:14, mystery:7, romance:22, scifi:24, sports:30,
+  supernatural:37, psychological:40, seinen:42, shounen:27
+};
+
+const TAB_CONFIG = {
+  trending:  { title:'🔥 Trending Manga',   type:'bypopularity' },
+  new:       { title:'🆕 New Releases',       type:'publishing'    },
+  completed: { title:'✅ Completed Manga',   type:'favorite'      },
+  action:    { title:'⚔️ Action Manga',       genre:1              },
+  romance:   { title:'💕 Romance Manga',      genre:22             },
+  fantasy:   { title:'🧙 Fantasy Manga',      genre:10             },
+  horror:    { title:'💀 Horror Manga',        genre:14             },
+  sports:    { title:'🏆 Sports Manga',        genre:30             },
+};
+
+let currentTab    = 'trending';
+let currentPage   = 1;
+let currentSearch = '';
+let currentGenreFilter = 'all';
+let readerState   = { manga:null, chapter:1, totalChapters:1, widthMode:'normal' };
+
+/* ── NAVBAR SEARCH SUPPORT ──
+   Example: manga.html?q=naruto
+   If user searches Manga from navbar, this auto-fills and loads results.
+*/
+const mangaUrlParams = new URLSearchParams(location.search);
+const mangaQuery = mangaUrlParams.get("q");
+
+if(mangaQuery){
+  currentSearch = mangaQuery;
+  const mangaSearchInput = document.getElementById("mangaSearchInput");
+  if(mangaSearchInput){
+    mangaSearchInput.value = mangaQuery;
+  }
+}
+
+/* ── SKELETON ── */
+function mangaSkeletons(n=12){
+  return Array(n).fill(`
+    <div class="skel-card">
+      <div class="skel-thumb skeleton" style="padding-bottom:148%"></div>
+      <div class="skel-line skeleton"></div>
+      <div class="skel-line short skeleton"></div>
+    </div>
+  `).join('');
+}
+
+/* ── TAB SWITCH ── */
+function switchTab(btn, tab){
+  document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTab = tab;
+  currentPage = 1;
+  currentSearch = '';
+  currentGenreFilter = 'all';
+
+  window.history.replaceState({}, "", "manga.html");
+
+  const mangaSearchInput = document.getElementById("mangaSearchInput");
+  if(mangaSearchInput) mangaSearchInput.value = "";
+
+  document.querySelectorAll('.mfpill').forEach(p => p.classList.remove('active'));
+  document.querySelector('.mfpill[data-genre="all"]')?.classList.add('active');
+  loadMangaGrid();
+}
+
+/* ── GENRE FILTER ── */
+function filterGenre(btn, genre){
+  document.querySelectorAll('.mfpill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  currentGenreFilter = genre;
+  currentPage = 1;
+  currentSearch = '';
+
+  window.history.replaceState({}, "", "manga.html");
+
+  const mangaSearchInput = document.getElementById("mangaSearchInput");
+  if(mangaSearchInput) mangaSearchInput.value = "";
+
+  loadMangaGrid();
+}
+
+/* ── SEARCH ── */
+function doMangaSearch(){
+  const q = document.getElementById('mangaSearchInput').value.trim();
+  if(!q) return;
+
+  currentSearch = q;
+  currentPage = 1;
+
+  // Keep URL clean for sharing / reload
+  window.history.replaceState(
+    {},
+    "",
+    "manga.html?q=" + encodeURIComponent(q)
+  );
+
+  document.getElementById('mangaSecTitle').textContent = `🔍 Results for "${q}"`;
+  loadMangaGrid();
+  showToast('Searching: ' + q);
+}
+document.getElementById('mangaSearchInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') doMangaSearch();
+});
+
+/* ── RANDOM ── */
+function loadRandomManga(){
+  const m = MANGA_LIST[Math.floor(Math.random() * MANGA_LIST.length)];
+  openReader(m);
+  showToast('Opening: ' + m.title);
+}
+
+/* ── FETCH MANGA FROM JIKAN ── */
+async function fetchMangaList(page=1){
+  const cfg = TAB_CONFIG[currentTab] || TAB_CONFIG.trending;
+
+  // If search
+  if(currentSearch){
+    return await jikanManga('/manga', {
+      q: currentSearch, page, limit:24, sfw:true, order_by:'popularity', sort:'asc'
+    });
+  }
+
+  // Genre filter
+  if(currentGenreFilter !== 'all'){
+    const genreId = MANGA_GENRES[currentGenreFilter.toLowerCase()];
+    if(genreId){
+      return await jikanManga('/manga', {
+        genres: genreId, page, limit:24, sfw:true,
+        order_by:'popularity', sort:'asc'
+      });
+    }
+  }
+
+  // Tab based
+  if(cfg.genre){
+    return await jikanManga('/manga', {
+      genres: cfg.genre, page, limit:24, sfw:true,
+      order_by:'popularity', sort:'asc'
+    });
+  }
+
+  return await jikanManga('/top/manga', { page, limit:24, type:'manga', filter: cfg.type || 'bypopularity' });
+}
+
+async function jikanManga(path, params={}){
+  const ck = 'mg_' + path + JSON.stringify(params);
+  const cached = Cache.valid(ck);
+  if(cached) return cached;
+  await sleep(300);
+  const q = new URLSearchParams(params).toString();
+  const r = await fetch(`https://api.jikan.moe/v4${path}?${q}`);
+  if(!r.ok) throw new Error('Jikan manga ' + r.status);
+  const d = await r.json();
+  Cache.set(ck, d, 600);
+  return d;
+}
+
+/* ── LOAD GRID ── */
+async function loadMangaGrid(){
+  const grid = document.getElementById('mangaGrid');
+  const pagination = document.getElementById('mangaPagination');
+  grid.innerHTML = mangaSkeletons(12);
+  pagination.innerHTML = '';
+
+  // Update section title from tab
+  if(!currentSearch){
+    const cfg = TAB_CONFIG[currentTab] || TAB_CONFIG.trending;
+    document.getElementById('mangaSecTitle').textContent = cfg.title;
+  }
+
+  try{
+    const d = await fetchMangaList(currentPage);
+    const list = d.data || [];
+    const lastPage = d.pagination?.last_visible_page || 1;
+
+    document.getElementById('mangaCount').textContent =
+      d.pagination?.items?.total ? `${d.pagination.items.total.toLocaleString()} titles found` : '';
+
+    if(!list.length){
+      grid.innerHTML = `
+        <div class="manga-empty" style="grid-column:1/-1">
+          <div class="icon">📚</div>
+          <p>No manga found. Try a different search or genre.</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = list.map(m => makeMangaCard(m)).join('');
+    renderPagination(currentPage, Math.min(lastPage, 10));
+
+  }catch(err){
+    console.error(err);
+    // Fallback to static list
+    grid.innerHTML = MANGA_LIST.map(m => makeMangaCardStatic(m)).join('');
+    showToast('Loaded from cache');
+  }
+}
+
+/* ── CARD FROM JIKAN DATA ── */
+function makeMangaCard(m){
+  const id = m.mal_id;
+  const title = m.title_english || m.title || 'Unknown';
+  const img = m.images?.jpg?.large_image_url || m.images?.jpg?.image_url || '';
+  const chapters = m.chapters
+  ? `${m.chapters} Chapters`
+  : (m.volumes
+      ? `${m.volumes} Volumes`
+      : 'Chapters N/A');
+  const score = m.score ? m.score.toFixed(1) : null;
+  const genre = m.genres?.[0]?.name || m.demographics?.[0]?.name || '';
+  const isNew = m.publishing;
+  const badge = isNew ? 'mbadge-new" title="Publishing">NEW' : 'mbadge-free" title="Free">FREE';
+
+  const mangaObj = {
+    title,
+    totalChapters: m.chapters || 999,
+    genre: genre,
+    rating: score || '?',
+    cover: img,
+    mal_id: id
+  };
+  const escaped = JSON.stringify(mangaObj).replace(/'/g,"&#39;").replace(/"/g,'&quot;');
+
+  return `
+  <div class="mcard" onclick="openReader(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(mangaObj))}')))" >
+    <div class="mcard-thumb">
+      <img src="${img}" alt="${title}" loading="lazy" onerror="imgFallback(this)">
+      <div class="mcard-overlay">
+        <div class="mcard-chap-count">${chapters}</div>
+        <button class="mcard-read-btn">📖 Read Free</button>
+      </div>
+      <span class="mbadge ${badge}</span>
+      <span class="mcard-chaps-badge">${chapters}</span>
+    </div>
+    <div class="mcard-info">
+      <div class="mcard-title">${title}</div>
+      <div class="mcard-meta">
+        ${score ? `<span class="mcard-rating">★ ${score}</span>` : ''}
+        ${genre ? `<span class="mcard-genre">${genre}</span>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── STATIC FALLBACK CARD ── */
+function makeMangaCardStatic(m){
+  return `
+  <div class="mcard" onclick="openReader(${JSON.stringify(m).replace(/"/g,'&quot;')})">
+    <div class="mcard-thumb">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,${m.bg||'#1a1a28'},#0b0c10);
+        display:flex;align-items:center;justify-content:center;
+        font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;
+        color:rgba(255,255,255,.2);">${m.title.split(' ').map(w=>w[0]).join('').slice(0,3)}</div>
+      <div class="mcard-overlay">
+        <div class="mcard-chap-count">Ch. ${m.totalChapters}</div>
+        <button class="mcard-read-btn">📖 Read Free</button>
+      </div>
+      <span class="mbadge mbadge-free">FREE</span>
+      <span class="mcard-chaps-badge">Ch. ${m.totalChapters}</span>
+    </div>
+    <div class="mcard-info">
+      <div class="mcard-title">${m.title}</div>
+      <div class="mcard-meta">
+        <span class="mcard-rating">★ ${m.rating}</span>
+        <span class="mcard-genre">${m.genre}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── PAGINATION ── */
+function renderPagination(cur, total){
+  if(total <= 1) return;
+  const pg = document.getElementById('mangaPagination');
+  let html = '';
+  if(cur > 1) html += `<button class="mpbtn" onclick="goPage(${cur-1})">‹ Prev</button>`;
+  for(let i=1;i<=total;i++){
+    if(i===1||i===total||Math.abs(i-cur)<=2){
+      html += `<button class="mpbtn${i===cur?' active':''}" onclick="goPage(${i})">${i}</button>`;
+    }else if(Math.abs(i-cur)===3){
+      html += `<span style="color:var(--text3);padding:0 4px">…</span>`;
+    }
+  }
+  if(cur < total) html += `<button class="mpbtn" onclick="goPage(${cur+1})">Next ›</button>`;
+  pg.innerHTML = html;
+}
+
+function goPage(p){
+  currentPage = p;
+  loadMangaGrid();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ═══════════════════════════════════════════
+   MANGA READER
+   Uses MangaDex API to fetch real pages
+   ═══════════════════════════════════════════ */
+
+async function openReader(manga){
+  readerState.manga = manga;
+  readerState.chapter = 1;
+  readerState.totalChapters = manga.totalChapters || 1;
+  readerState.widthMode = 'normal';
+
+  document.getElementById('readerTitle').textContent = manga.title;
+  document.getElementById('readerTotalChaps').textContent = manga.totalChapters || '?';
+
+  // Build chapter select
+  const total = Math.min(manga.totalChapters || 50, 500);
+  let opts = '';
+  for(let i=1;i<=total;i++) opts += `<option value="${i}">Ch. ${i}</option>`;
+  document.getElementById('chapSelect').innerHTML = opts;
+
+  document.getElementById('readerModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  await loadReaderChapter(1, manga);
+
+  function saveMangaHistory(manga){
+  const email = localStorage.getItem("ar_current_user");
+  if(!email) return;
+
+  const key = "ar_history_" + email;
+  let data = JSON.parse(localStorage.getItem(key) || "[]");
+
+  const url = `manga.html?q=${encodeURIComponent(manga.title)}`;
+
+  data = data.filter(x => x.url !== url);
+
+  data.push({
+    type:"Manga",
+    title:manga.title,
+    url:url,
+    time:Date.now()
+  });
+
+  localStorage.setItem(key, JSON.stringify(data.slice(-30)));
+}
+}
+
+function closeReader(){
+  document.getElementById('readerModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function loadReaderChapter(chap, manga){
+  readerState.chapter = chap;
+  document.getElementById('readerChapNum').textContent = chap;
+  document.getElementById('chapSelect').value = chap;
+  document.getElementById('prevChapBtn').disabled = chap <= 1;
+  document.getElementById('nextChapBtn').disabled = chap >= (readerState.totalChapters||999);
+
+  const body = document.getElementById('readerBody');
+  body.innerHTML = `
+    <div class="reader-loading">
+      <div class="reader-spinner"></div>
+      <p>Loading Chapter ${chap}...</p>
+    </div>`;
+  body.scrollTop = 0;
+
+  try{
+    // Search MangaDex for this manga
+    const searchTitle = encodeURIComponent(manga.title);
+    const searchRes = await fetch(`https://api.mangadex.org/manga?title=${searchTitle}&limit=5&order[relevance]=desc`);
+    const searchData = await searchRes.json();
+    const mangaId = searchData?.data?.[0]?.id;
+
+    if(!mangaId) throw new Error('Not found on MangaDex');
+
+    // Get chapters
+    const chapRes = await fetch(
+      `https://api.mangadex.org/manga/${mangaId}/feed?translatedLanguage[]=en&limit=1&offset=${chap-1}&order[chapter]=asc`
+    );
+    const chapData = await chapRes.json();
+    const chapter = chapData?.data?.[0];
+
+    if(!chapter) throw new Error('Chapter not available');
+
+    // Get pages
+    const serverRes = await fetch(`https://api.mangadex.org/at-home/server/${chapter.id}`);
+    const serverData = await serverRes.json();
+    const base = serverData.baseUrl;
+    const hash = serverData.chapter.hash;
+    const pages = serverData.chapter.data; // high quality
+
+    if(!pages?.length) throw new Error('No pages');
+
+    readerState.totalChapters = Math.max(readerState.totalChapters, parseInt(chapData.total)||chap);
+    document.getElementById('readerTotalChaps').textContent = readerState.totalChapters;
+    document.getElementById('nextChapBtn').disabled = chap >= readerState.totalChapters;
+
+    const widthClass = readerState.widthMode === 'wide' ? 'wide' : readerState.widthMode === 'narrow' ? 'narrow' : '';
+
+    body.innerHTML = pages.map((p,i) => `
+      <img class="reader-page-img ${widthClass}"
+           src="${base}/data/${hash}/${p}"
+           alt="Page ${i+1}"
+           loading="${i<3?'eager':'lazy'}"
+           onerror="this.src='https://placehold.co/800x1200/13141a/555?text=Page+${i+1}+Loading...'">
+    `).join('');
+
+  }catch(err){
+    console.warn('MangaDex error:', err.message);
+    // Fallback: show placeholder pages
+    showFallbackReader(manga, chap);
+  }
+}
+
+function showFallbackReader(manga, chap){
+  const body = document.getElementById('readerBody');
+  const widthClass = readerState.widthMode === 'wide' ? 'wide' : readerState.widthMode === 'narrow' ? 'narrow' : '';
+  const pages = Array.from({length:20},(_,i) => i+1);
+  body.innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;
+      padding:28px 24px;text-align:center;max-width:700px;width:100%;margin-bottom:20px;">
+      <div style="font-size:36px;margin-bottom:12px">📚</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px">${manga.title}</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Chapter ${chap} — Reading via External Source</div>
+      <a href="https://mangadex.org/search?q=${encodeURIComponent(manga.title)}"
+         target="_blank" rel="noopener"
+         style="display:inline-block;background:var(--accent);color:#fff;
+           padding:10px 24px;border-radius:8px;font-weight:600;font-size:14px;
+           text-decoration:none;margin:4px;">
+        📖 Read on MangaDex (Free)
+      </a>
+      <a href="https://mangakakalot.com/search/story/${encodeURIComponent(manga.title.toLowerCase().replace(/ /g,'_'))}"
+         target="_blank" rel="noopener"
+         style="display:inline-block;background:var(--bg3);color:var(--text);
+           border:1px solid var(--border2);
+           padding:10px 24px;border-radius:8px;font-weight:600;font-size:14px;
+           text-decoration:none;margin:4px;">
+        🌐 Read on MangaKakalot
+      </a>
+      <div style="margin-top:18px;font-size:12px;color:var(--text3)">
+        Both sources are 100% free. Opens in new tab.
+      </div>
+    </div>
+    ${pages.map(i=>`
+      <img class="reader-page-img ${widthClass}"
+           src="https://placehold.co/800x1200/13141a/444?text=${encodeURIComponent(manga.title)}%0AChapter+${chap}%0APage+${i}"
+           alt="Page ${i}" loading="lazy">`).join('')}
+  `;
+}
+
+function changeChapter(dir){
+  const next = readerState.chapter + dir;
+  if(next < 1 || next > readerState.totalChapters) return;
+  loadReaderChapter(next, readerState.manga);
+}
+
+function jumpToChapter(val){
+  loadReaderChapter(parseInt(val), readerState.manga);
+}
+
+function cycleWidth(){
+  const modes = ['normal','wide','narrow'];
+  const idx = modes.indexOf(readerState.widthMode);
+  readerState.widthMode = modes[(idx+1) % modes.length];
+  const labels = {normal:'Normal width',wide:'Wide mode',narrow:'Narrow mode'};
+  showToast(labels[readerState.widthMode]);
+  // Reapply class to all pages
+  document.querySelectorAll('.reader-page-img').forEach(img => {
+    img.className = 'reader-page-img';
+    if(readerState.widthMode !== 'normal') img.classList.add(readerState.widthMode);
+  });
+}
+
+// Keyboard navigation in reader
+document.addEventListener('keydown', e => {
+  if(!document.getElementById('readerModal').classList.contains('open')) return;
+  if(e.key === 'ArrowRight' || e.key === 'ArrowDown') changeChapter(1);
+  if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeChapter(-1);
+  if(e.key === 'Escape') closeReader();
+});
+
+/* ── SIDEBAR WIDGETS ── */
+async function loadMangaWidgets(){
+  // Popular
+  try{
+    const d = await jikanManga('/top/manga',{limit:8,type:'manga',filter:'bypopularity'});
+    const list = d.data || [];
+    document.getElementById('popularWidget').innerHTML = list.map((m,i) => `
+      <div class="mwid-item" onclick="openReader({title:'${(m.title_english||m.title).replace(/'/g,"&#39;")}',totalChapters:${m.chapters||100},genre:'${m.genres?.[0]?.name||''}',rating:'${m.score||'?'}',cover:'${m.images?.jpg?.image_url||''}',mal_id:${m.mal_id}})">
+        <div class="mwid-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
+        <div class="mwid-thumb"><img src="${m.images?.jpg?.image_url||''}" alt="${m.title_english||m.title}" loading="lazy" onerror="imgFallback(this)"></div>
+        <div>
+          <div class="mwid-item-title">${m.title_english||m.title}</div>
+          <div class="mwid-item-meta">Ch.${m.chapters||'?'} · ★${m.score||'?'}</div>
+        </div>
+      </div>
+    `).join('');
+  }catch{
+    document.getElementById('popularWidget').innerHTML = MANGA_LIST.slice(0,6).map((m,i)=>`
+      <div class="mwid-item" onclick="openReader(${JSON.stringify(m).replace(/"/g,'&quot;')})">
+        <div class="mwid-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
+        <div style="flex:1"><div class="mwid-item-title">${m.title}</div><div class="mwid-item-meta">★${m.rating}</div></div>
+      </div>`).join('');
+  }
+
+  // Recent
+  try{
+    const d = await jikanManga('/manga',{limit:6,sfw:true,order_by:'start_date',sort:'desc'});
+    const list = d.data || [];
+    document.getElementById('recentMangaWidget').innerHTML = list.map(m => `
+      <div class="mwid-item" onclick="openReader({title:'${(m.title_english||m.title).replace(/'/g,"&#39;")}',totalChapters:${m.chapters||100},genre:'${m.genres?.[0]?.name||''}',rating:'${m.score||'?'}',cover:'${m.images?.jpg?.image_url||''}',mal_id:${m.mal_id}})">
+        <div class="mwid-thumb"><img src="${m.images?.jpg?.image_url||''}" alt="${m.title}" loading="lazy" onerror="imgFallback(this)"></div>
+        <div>
+          <div class="mwid-item-title">${m.title_english||m.title}</div>
+          <div class="mwid-item-meta">${m.status||'Publishing'}</div>
+        </div>
+      </div>
+    `).join('');
+  }catch{
+    document.getElementById('recentMangaWidget').innerHTML = '<p style="font-size:12px;color:var(--text3);padding:4px">Unavailable</p>';
+  }
+}
+
+/* ── STATIC FALLBACK LIST ── */
+const MANGA_LIST = [
+  {title:'One Piece',totalChapters:1110,genre:'Adventure',rating:'9.8',bg:'#0a1520'},
+  {title:'Demon Slayer',totalChapters:205,genre:'Action',rating:'9.6',bg:'#0f0a1a'},
+  {title:'Jujutsu Kaisen',totalChapters:260,genre:'Supernatural',rating:'9.4',bg:'#0a0815'},
+  {title:'Attack on Titan',totalChapters:139,genre:'Dark Fantasy',rating:'9.7',bg:'#0a1508'},
+  {title:'Chainsaw Man',totalChapters:170,genre:'Horror',rating:'9.4',bg:'#1a0a0a'},
+  {title:'Vinland Saga',totalChapters:210,genre:'Historical',rating:'9.6',bg:'#0a1218'},
+  {title:'Berserk',totalChapters:374,genre:'Seinen',rating:'9.9',bg:'#150008'},
+  {title:'Vagabond',totalChapters:327,genre:'Historical',rating:'9.8',bg:'#100f00'},
+  {title:'Monster',totalChapters:162,genre:'Mystery',rating:'9.7',bg:'#0a0810'},
+  {title:'Naruto',totalChapters:700,genre:'Shounen',rating:'9.5',bg:'#1a100a'},
+  {title:'Bleach',totalChapters:686,genre:'Action',rating:'9.2',bg:'#0a0f1a'},
+  {title:'Hunter x Hunter',totalChapters:400,genre:'Adventure',rating:'9.5',bg:'#0f1a0a'},
+];
+
+/* ── INIT ── */
+(async function init(){
+  // Mark manga nav link active
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    if(a.href.includes('manga.html')) a.classList.add('active');
+  });
+
+  await loadMangaGrid();
+  loadMangaWidgets();
+})();
+</script>
+</body>
+</html>

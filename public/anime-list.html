@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Anime List — AnimeRush</title>
+<meta name="description" content="Browse the complete anime list on AnimeRush. Filter by type, status, genre, year. Watch all anime online free in HD."/>
+<meta name="robots" content="index,follow"/>
+<link rel="canonical" href="https://animerush.in/anime-list"/>
+<link rel="stylesheet" href="style.css">
+<style>
+.list-header{
+  background:linear-gradient(135deg,var(--bg2),var(--bg3));
+  border-bottom:1px solid var(--border);padding:36px 0;
+}
+.list-header h1{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;margin-bottom:8px}
+.list-header p{color:var(--text3);font-size:14px}
+.az-bar{display:flex;flex-wrap:wrap;gap:5px;margin:18px 0}
+.az-btn{
+  background:var(--bg4);border:1px solid var(--border);color:var(--text3);
+  border-radius:5px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;
+}
+.az-btn:hover,.az-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.fstrip-sel{
+  background:var(--bg3);border:1px solid var(--border2);color:var(--text2);
+  border-radius:7px;padding:8px 14px;font-size:13px;outline:none;cursor:pointer;
+  transition:border-color .2s;font-family:'Inter',sans-serif;
+}
+.fstrip-sel:focus{border-color:var(--accent);color:var(--text)}
+.active-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;min-height:10px}
+.af-tag{
+  background:rgba(230,57,70,.12);border:1px solid rgba(230,57,70,.3);
+  color:var(--accent);border-radius:20px;padding:4px 12px;font-size:12px;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+}
+.af-tag:hover{background:rgba(230,57,70,.22)}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<div class="list-header">
+  <div class="page-wrap">
+    <div class="breadcrumb" style="padding-top:0;margin-bottom:12px">
+      <a href="/">Home</a> › <span>Anime List</span>
+    </div>
+    <h1>📺 Complete Anime List</h1>
+    <p>Browse all anime series, movies and OVAs. Thousands of titles, updated daily.</p>
+    <!-- A-Z Filter -->
+    <div class="az-bar" id="azBar"></div>
+  </div>
+</div>
+
+<div class="page-wrap" style="padding-top:24px;padding-bottom:50px">
+
+  <!-- FILTER STRIP -->
+  <div class="filter-strip">
+    <select class="fstrip-sel" id="flFilter" onchange="applyFilters()">
+      <option value="bypopularity">Most Popular</option>
+      <option value="airing">Currently Airing</option>
+      <option value="upcoming">Upcoming</option>
+      <option value="byrating">Top Rated</option>
+      <option value="favorite">Most Favorited</option>
+    </select>
+    <select class="fstrip-sel" id="flType" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option value="tv">TV</option>
+      <option value="movie">Movie</option>
+      <option value="ova">OVA</option>
+      <option value="ona">ONA</option>
+      <option value="special">Special</option>
+    </select>
+    <select class="fstrip-sel" id="flGenre" onchange="applyFilters()">
+      <option value="">All Genres</option>
+      <option value="1">Action</option>
+      <option value="2">Adventure</option>
+      <option value="4">Comedy</option>
+      <option value="8">Drama</option>
+      <option value="10">Fantasy</option>
+      <option value="22">Romance</option>
+      <option value="24">Sci-Fi</option>
+      <option value="37">Supernatural</option>
+      <option value="36">Slice of Life</option>
+      <option value="30">Sports</option>
+      <option value="17">Martial Arts</option>
+      <option value="28">Mecha</option>
+      <option value="14">Horror</option>
+    </select>
+    <select class="fstrip-sel" id="flYear" onchange="applyFilters()">
+      <option value="">All Years</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+      <option value="2021">2021</option>
+      <option value="2020">2020</option>
+      <option value="2019">2019</option>
+      <option value="2018">2018</option>
+      <option value="2015">2015–2017</option>
+      <option value="2010">2010–2014</option>
+      <option value="2000">2000–2009</option>
+    </select>
+    <select class="fstrip-sel" id="flScore" onchange="applyFilters()">
+      <option value="">Any Score</option>
+      <option value="9">9+ Masterpiece</option>
+      <option value="8">8+ Great</option>
+      <option value="7">7+ Good</option>
+    </select>
+    <button onclick="resetAll()" style="background:transparent;border:1px solid var(--border2);color:var(--text3);border-radius:7px;padding:8px 14px;font-size:12px;cursor:pointer;transition:all .18s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)'">Reset ✕</button>
+  </div>
+
+  <!-- ACTIVE FILTERS -->
+  <div class="active-filters" id="activeTags"></div>
+
+  <!-- RESULT INFO -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+    <div style="font-size:14px;color:var(--text3)" id="resultInfo">Loading...</div>
+    <div style="font-size:13px;color:var(--text3)" id="pageInfo"></div>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid-lg" id="animeGrid"></div>
+
+  <!-- PAGINATION -->
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+let currentPage = 1;
+let totalPages  = 1;
+let activeLetter = '';
+
+// A-Z bar
+const azBar = document.getElementById('azBar');
+const letters = '#ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+azBar.innerHTML = letters.map(l=>`<div class="az-btn${l===' '?' active':''}" onclick="filterByLetter('${l}')">${l}</div>`).join('');
+
+// Read URL params
+const urlP = new URLSearchParams(location.search);
+const initFilter = urlP.get('filter');
+if(initFilter) document.getElementById('flFilter').value = initFilter;
+
+loadList(1);
+
+async function loadList(page=1){
+  currentPage = page;
+  const grid = document.getElementById('animeGrid');
+  grid.innerHTML = skeletonCards(24);
+
+  const filter  = document.getElementById('flFilter').value||'bypopularity';
+  const type    = document.getElementById('flType').value;
+  const genre   = document.getElementById('flGenre').value;
+  const year    = document.getElementById('flYear').value;
+  const score   = document.getElementById('flScore').value;
+
+  try{
+    let data;
+    if(activeLetter && activeLetter!=='#'){
+      // A-Z search
+      data = await Jikan.get('/anime',{letter:activeLetter,page,limit:24,sfw:true,
+        ...(type&&{type}), ...(genre&&{genres:genre}),
+        ...(score&&{min_score:score}), order_by:'title', sort:'asc'});
+    } else {
+      const params = {page, limit:24};
+      if(type)  params.type   = type;
+      if(genre) params.genres = genre;
+      if(score) params.min_score = score;
+      if(year)  { params.start_date=year+'-01-01'; params.end_date=(parseInt(year)+4)+'-12-31'; }
+      // Use top/anime for simple filters
+      if(!type && !genre && !score && !year && !activeLetter){
+        data = await Jikan.topAnime(page, filter);
+      } else {
+        params.order_by = filter==='byrating'?'score':filter==='bypopularity'?'popularity':'score';
+        params.sort='desc'; params.sfw=true;
+        data = await Jikan.get('/anime', params);
+      }
+    }
+
+    const list = data.data||[];
+    totalPages = data.pagination?.last_visible_page||1;
+    const total = data.pagination?.items?.total||list.length;
+
+    document.getElementById('resultInfo').innerHTML = `Showing <strong style="color:var(--text)">${list.length}</strong> of <strong style="color:var(--accent)">${total.toLocaleString()}</strong> anime`;
+    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+
+    grid.innerHTML = list.length ? list.map(a=>makeAnimeCard(a,'jikan')).join('') : '<p style="color:var(--text3);grid-column:1/-1;padding:30px;text-align:center">No anime found. Try different filters.</p>';
+    renderPagination();
+  }catch(e){
+    grid.innerHTML=`<p style="color:var(--text3);grid-column:1/-1;padding:30px;text-align:center">Failed to load anime list. Please refresh.<br><small style="color:var(--text3)">${e.message}</small></p>`;
+    console.error(e);
+  }
+}
+
+function applyFilters(){ loadList(1); buildActiveTags(); }
+
+function buildActiveTags(){
+  const tags=[];
+  const type  = document.getElementById('flType').value;
+  const genre = document.getElementById('flGenre').value;
+  const year  = document.getElementById('flYear').value;
+  const score = document.getElementById('flScore').value;
+  const genreNames={1:'Action',2:'Adventure',4:'Comedy',8:'Drama',10:'Fantasy',22:'Romance',24:'Sci-Fi',37:'Supernatural',36:'Slice of Life',30:'Sports',17:'Martial Arts',28:'Mecha',14:'Horror'};
+  if(type)  tags.push({label:'Type: '+type.toUpperCase(), clear:()=>{document.getElementById('flType').value='';applyFilters()}});
+  if(genre) tags.push({label:'Genre: '+(genreNames[genre]||genre), clear:()=>{document.getElementById('flGenre').value='';applyFilters()}});
+  if(year)  tags.push({label:'Year: '+year, clear:()=>{document.getElementById('flYear').value='';applyFilters()}});
+  if(score) tags.push({label:'Score: '+score+'+', clear:()=>{document.getElementById('flScore').value='';applyFilters()}});
+  if(activeLetter) tags.push({label:'Letter: '+activeLetter, clear:()=>{activeLetter='';filterByLetter('#')}});
+  document.getElementById('activeTags').innerHTML = tags.map((t,i)=>`<div class="af-tag" onclick="clearTag(${i})">${t.label} ✕</div>`).join('');
+  window._tagClearFns = tags.map(t=>t.clear);
+}
+function clearTag(i){ window._tagClearFns[i](); }
+
+function filterByLetter(l){
+  activeLetter = l==='#'?'':l;
+  document.querySelectorAll('.az-btn').forEach(b=>b.classList.toggle('active',b.textContent===l));
+  loadList(1); buildActiveTags();
+}
+
+function resetAll(){
+  ['flFilter','flType','flGenre','flYear','flScore'].forEach(id=>document.getElementById(id).value=id==='flFilter'?'bypopularity':'');
+  activeLetter='';
+  document.querySelectorAll('.az-btn').forEach(b=>b.classList.toggle('active',b.textContent==='#'));
+  document.getElementById('activeTags').innerHTML='';
+  loadList(1);
+}
+
+function renderPagination(){
+  if(totalPages<=1){document.getElementById('pagination').innerHTML='';return;}
+  let html='';
+  if(currentPage>1) html+=`<button class="page-btn" onclick="loadList(${currentPage-1})">◀ Prev</button>`;
+  const from=Math.max(1,currentPage-2), to=Math.min(totalPages,currentPage+2);
+  if(from>1) html+=`<button class="page-btn" onclick="loadList(1)">1</button>${from>2?'<span style="color:var(--text3);padding:8px 4px">…</span>':''}`;
+  for(let i=from;i<=to;i++) html+=`<button class="page-btn${i===currentPage?' active':''}" onclick="loadList(${i})">${i}</button>`;
+  if(to<totalPages) html+=`${to<totalPages-1?'<span style="color:var(--text3);padding:8px 4px">…</span>':''}<button class="page-btn" onclick="loadList(${totalPages})">${totalPages}</button>`;
+  if(currentPage<totalPages) html+=`<button class="page-btn" onclick="loadList(${currentPage+1})">Next ▶</button>`;
+  document.getElementById('pagination').innerHTML=html;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function skeletonCards(n){
+  return Array(n).fill(`<div class="skel-card"><div class="skel-thumb skeleton" style="padding-bottom:148%"></div><div class="skel-line skeleton"></div><div class="skel-line short skeleton"></div></div>`).join('');
+}
+</script>
+</body>
+</html>

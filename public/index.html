@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AnimeRush — Anime Trailers, Reviews & Official Streaming Guide</title>
+<meta name="description"
+content="Discover trending anime, official trailers, episode guides, reviews, and legal streaming platforms like Crunchyroll, Netflix, Prime Video, and Muse Asia on AnimeRush."/>
+
+<meta name="keywords"
+content="anime reviews, anime trailers, anime episode guide, anime recommendations, Crunchyroll anime, Netflix anime, anime news, trending anime, AnimeRush"/>
+<meta name="robots" content="index,follow"/>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<div style="background:var(--bg2);border-bottom:1px solid var(--border);text-align:center;padding:10px">
+  <div class="ad-slot ad-728">Advertisement — 728×90 AdSense Banner</div>
+</div>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1>
+Explore The World of <em>Anime</em>
+</h1>
+
+<p>
+Find anime trailers, episode guides,
+reviews, recommendations, and official
+watch platforms — all in one place.
+</p>
+
+      <div class="hero-btns">
+  <button class="btn-red" onclick="window.location.href='anime-list.html'">
+    🎬 Explore Anime
+  </button>
+
+  <button class="btn-ghost" onclick="goRandom()">
+    ✨ Surprise Me
+  </button>
+</div>
+
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-n">12,000+</div><div class="hstat-l">Anime</div></div>
+        <div class="hstat"><div class="hstat-n">500K+ Users</div><div class="hstat-l">Users/Mo</div></div>
+        <div class="hstat"><div class="hstat-n">Official Streaming Links</div><div class="hstat-l">Quality</div></div>
+        <div class="hstat"><div class="hstat-n">Trailers & Reviews</div><div class="hstat-l">Available</div></div>
+      </div>
+    </div>
+
+    <div class="hero-featured" id="heroFeatured">
+      <div style="color:var(--text3);font-size:13px;text-align:center;padding:20px">Loading...</div>
+    </div>
+  </div>
+</section>
+
+<div class="page-wrap">
+  <div class="has-sidebar">
+
+    <div>
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title">🔴 Currently Airing</div>
+          <a class="see-all" href="anime-list.html?filter=airing">View All →</a>
+        </div>
+        <div class="grid" id="airingGrid"></div>
+      </section>
+
+      <div style="padding:16px 0;text-align:center">
+        <div class="ad-slot ad-resp">Advertisement — Responsive AdSense</div>
+      </div>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title">🌸 Popular This Season</div>
+          <a class="see-all" href="anime-list.html?filter=bypopularity">View All →</a>
+        </div>
+        <div class="grid" id="seasonGrid"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title">⭐ Top Rated Anime</div>
+          <a class="see-all" href="anime-list.html?filter=byrating">View All →</a>
+        </div>
+        <div class="grid" id="topGrid"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title">🎭 Browse by Genre</div>
+        </div>
+        <div class="genre-wrap" id="genrePills"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title">🎬 Anime Movies</div>
+          <a class="see-all" href="movies.html">View All →</a>
+        </div>
+        <div class="grid" id="moviesGrid"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title">🛍️ Official Merchandise</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px" id="merchGrid"></div>
+        <p style="font-size:11px;color:var(--text3);margin-top:10px">* Affiliate links — we may earn a commission at no extra cost to you.</p>
+      </section>
+
+      <div style="padding:16px 0;text-align:center">
+        <div class="ad-slot ad-resp">Advertisement — AdSense In-Article</div>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="widget" style="text-align:center;padding:10px">
+        <div class="ad-slot ad-300">Ad 300×250</div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">🔥 Top Trending</div>
+        <div id="trendingWidget"></div>
+      </div>
+
+      <div class="widget" style="text-align:center;padding:10px">
+        <div class="ad-slot" style="min-height:200px;line-height:200px">Ad 300×600</div>
+      </div>
+
+      <div class="widget">
+        <div class="widget-title">🕐 Recent Updates</div>
+        <div id="recentWidget"></div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+
+<script>
+const GENRES = [
+  {id:1,name:'Action'},
+  {id:2,name:'Adventure'},
+  {id:4,name:'Comedy'},
+  {id:8,name:'Drama'},
+  {id:10,name:'Fantasy'},
+  {id:14,name:'Horror'},
+  {id:7,name:'Mystery'},
+  {id:22,name:'Romance'},
+  {id:24,name:'Sci-Fi'},
+  {id:37,name:'Supernatural'},
+  {id:36,name:'Slice of Life'},
+  {id:30,name:'Sports'},
+  {id:23,name:'School'},
+  {id:17,name:'Martial Arts'},
+  {id:28,name:'Mecha'},
+  {id:35,name:'Harem'},
+  {id:38,name:'Military'},
+  {id:13,name:'Historical'}
+];
+
+function skeletonCards(n){
+  return Array(n).fill(`
+    <div class="skel-card">
+      <div class="skel-thumb skeleton" style="padding-bottom:148%"></div>
+      <div class="skel-line skeleton"></div>
+      <div class="skel-line short skeleton"></div>
+    </div>
+  `).join('');
+}
+
+function openAnime(id){
+  window.location.href = 'watch.html?id=' + id;
+}
+
+function goRandom(){
+  const ids = [21,20,5114,31964,38000,11061,16498,1575,1535,9253];
+  const randomId = ids[Math.floor(Math.random() * ids.length)];
+  openAnime(randomId);
+}
+
+async function loadHero(){
+  try{
+    const d = await Jikan.topAnime(1,'airing');
+    const list = (d.data || []).slice(0,4);
+
+    document.getElementById('heroFeatured').innerHTML = list.map(a => `
+      <div class="hf-card" onclick="openAnime('${a.mal_id}')">
+        <div class="hf-thumb">
+          <img src="${a.images?.jpg?.image_url || ''}" alt="${a.title}" loading="lazy" onerror="imgFallback(this)">
+        </div>
+
+        <div class="hf-info">
+          <span class="hf-badge sub">SUB</span>
+          <div class="hf-title">${a.title}</div>
+          <div class="hf-meta">Ep ${a.episodes || '?'} · ${a.score ? '★ ' + a.score : ''}</div>
+        </div>
+      </div>
+    `).join('');
+
+  }catch(e){
+    console.warn(e);
+  }
+}
+
+async function loadSection(gridId, fetcher, source='jikan'){
+  const el = document.getElementById(gridId);
+  if(!el) return;
+
+  el.innerHTML = skeletonCards(8);
+
+  try{
+    const d = await fetcher();
+    const list = (d.data || []).slice(0,8);
+
+    el.innerHTML = list.length
+      ? list.map(a => makeAnimeCard(a, source)).join('')
+      : '<p style="color:var(--text3);padding:20px">Nothing found.</p>';
+
+  }catch(e){
+    el.innerHTML = `<p style="color:var(--text3);padding:20px">Failed to load.</p>`;
+    console.warn(e);
+  }
+}
+
+async function loadSidebar(){
+  try{
+    const d = await AniList.trending(1);
+    const list = (d.data?.Page?.media || []).slice(0,10);
+
+    document.getElementById('trendingWidget').innerHTML = list.map((a,i) => `
+      <div class="rank-item" onclick="openAnime('al_${a.id}')">
+        <div class="rank-num ${i===0?'g1':i===1?'g2':i===2?'g3':''}">${i+1}</div>
+
+        <div class="rank-thumb">
+          <img src="${a.coverImage?.large || ''}" alt="${a.title?.romaji}" loading="lazy" onerror="imgFallback(this)">
+        </div>
+
+        <div class="rank-info">
+          <div class="ri-title">${a.title?.english || a.title?.romaji}</div>
+          <div class="ri-meta">${a.format || 'TV'} · Ep ${a.episodes || '?'}</div>
+        </div>
+      </div>
+    `).join('');
+
+  }catch(e){
+    document.getElementById('trendingWidget').innerHTML =
+      '<p style="color:var(--text3);font-size:13px;padding:8px">Unavailable</p>';
+  }
+
+  try{
+    const d = await Jikan.seasonNow(1);
+    const list = (d.data || []).slice(0,6);
+
+    document.getElementById('recentWidget').innerHTML = list.map(a => `
+      <div class="rank-item" onclick="openAnime('${a.mal_id}')">
+        <div class="rank-thumb">
+          <img src="${a.images?.jpg?.image_url || ''}" alt="${a.title}" loading="lazy" onerror="imgFallback(this)">
+        </div>
+
+        <div class="rank-info">
+          <div class="ri-title">${a.title}</div>
+          <div class="ri-meta">${a.type || 'TV'} · ${a.status || ''}</div>
+        </div>
+      </div>
+    `).join('');
+
+  }catch(e){
+    document.getElementById('recentWidget').innerHTML =
+      '<p style="color:var(--text3);font-size:13px;padding:8px">Unavailable</p>';
+  }
+}
+
+function loadGenres(){
+  document.getElementById('genrePills').innerHTML = GENRES.map(g => `
+    <div class="gpill" onclick="window.location.href='genre.html?id=${g.id}'">
+      ${g.name}
+    </div>
+  `).join('');
+}
+
+function loadMerch(){
+  const items = [
+    {
+      title:'Jujutsu Kaisen Gojo Figure',
+      price:'₹1,299',
+      store:'Amazon',
+      link:'https://amazon.in',
+      img:'assets/merch/gojo-figure.jpeg'
+    },
+    {
+      title:'Demon Slayer Nezuko Figure',
+      price:'₹2,499',
+      store:'Amazon',
+      link:'https://amazon.in',
+      img:'assets/merch/nezuko-figure.jpeg'
+    },
+    {
+      title:'One Piece Luffy Statue',
+      price:'₹899',
+      store:'Flipkart',
+      link:'https://flipkart.com',
+      img:'assets/merch/luffy-statue.jpeg'
+    },
+    {
+      title:'Naruto Manga Box Set',
+      price:'₹3,999',
+      store:'Amazon',
+      link:'https://amazon.in',
+      img:'assets/merch/naruto-manga.jpeg'
+    }
+  ];
+
+  document.getElementById('merchGrid').innerHTML = items.map(m => `
+    <a href="${m.link}" target="_blank" rel="noopener sponsored"
+       style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;gap:12px">
+      <img src="${m.img}" style="width:80px;height:100px;border-radius:8px;object-fit:cover" alt="${m.title}">
+      <div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">${m.title}</div>
+        <div style="font-size:17px;font-weight:800;color:var(--accent)">${m.price}</div>
+        <div style="font-size:12px;color:var(--text3)">Buy via ${m.store} →</div>
+      </div>
+    </a>
+  `).join('');
+}
+
+(async function(){
+  loadHero();
+  loadGenres();
+  loadMerch();
+
+  await loadSection('airingGrid', () => Jikan.topAnime(1,'airing'));
+  await loadSection('seasonGrid', () => Jikan.seasonNow());
+  await loadSection('topGrid', () => Jikan.topAnime(1,'byrating'));
+  await loadSection('moviesGrid', () => Jikan.movies());
+
+  loadSidebar();
+})();
+</script>
+
+</body>
+</html>

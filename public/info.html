@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About Us — AnimeRush</title>
+<meta name="description" content="About AnimeRush — the best free anime streaming site. Learn about our mission to bring you the best anime experience."/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.info-page{max-width:800px;margin:40px auto;padding:0 24px 60px}
+.info-page h1{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;margin-bottom:20px}
+.info-page h2{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;margin:28px 0 10px;color:var(--accent)}
+.info-page p{color:var(--text2);font-size:15px;line-height:1.85;margin-bottom:14px}
+.info-page ul{color:var(--text2);font-size:15px;line-height:1.85;padding-left:20px;margin-bottom:14px}
+.info-page ul li{margin-bottom:6px}
+.info-page a{color:var(--accent)}
+.info-page a:hover{text-decoration:underline}
+.contact-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-top:20px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;background:var(--bg4);border:1px solid var(--border2);color:var(--text);
+  border-radius:7px;padding:10px 14px;font-size:14px;outline:none;
+  font-family:'Inter',sans-serif;transition:border-color .2s;
+}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:130px}
+.submit-btn{background:var(--accent);border:none;color:#fff;border-radius:7px;padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.submit-btn:hover{background:var(--accent-h)}
+.divider{border:none;border-top:1px solid var(--border);margin:28px 0}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<div class="info-page" id="pageContent">
+  <!-- Content injected by JS based on URL -->
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+const PAGE = location.pathname.split('/').pop().replace('.html','');
+const PAGES = {
+  'about': {
+    title: 'About AnimeRush',
+    content: `
+      <h1>About AnimeRush 🎌</h1>
+      <p>Welcome to <strong>AnimeRush.in</strong> — your #1 destination to watch anime online free in HD. We are a passionate team of anime fans dedicated to bringing you the best anime streaming experience.</p>
+      <h2>Our Mission</h2>
+      <p>Our mission is simple: make anime accessible to everyone. We believe great anime should be free, easy to watch, and available in the highest quality. Whether you're a long-time otaku or just discovering anime, AnimeRush is your home.</p>
+      <h2>What We Offer</h2>
+      <ul>
+        <li>✅ 12,000+ anime series and movies</li>
+        <li>✅ English Sub and Dub options</li>
+        <li>✅ HD quality up to 1080p</li>
+        <li>✅ Daily episode updates</li>
+        <li>✅ No registration required</li>
+        <li>✅ Mobile-friendly design</li>
+        <li>✅ Weekly airing schedule</li>
+        <li>✅ Advanced search and filtering</li>
+      </ul>
+      <h2>Data Sources</h2>
+      <p>Anime metadata (titles, synopses, ratings, images) is sourced from <a href="https://myanimelist.net" target="_blank" rel="noopener">MyAnimeList</a> via the <a href="https://jikan.moe" target="_blank" rel="noopener">Jikan API</a> and <a href="https://anilist.co" target="_blank" rel="noopener">AniList</a>. We do not claim ownership of any anime content.</p>
+      <h2>Advertising</h2>
+      <p>AnimeRush is supported by advertising through Google AdSense and affiliate partnerships. Ads help us keep the service free for everyone. We do not use intrusive pop-ups or redirect ads.</p>
+      <h2>Contact Us</h2>
+      <p>Have questions, suggestions or DMCA requests? Visit our <a href="/pages/contact.html">Contact page</a> or email us at <a href="mailto:contact@animerush.in">contact@animerush.in</a>.</p>`
+  },
+  'contact': {
+    title: 'Contact — AnimeRush',
+    content: `
+      <h1>Contact Us 📬</h1>
+      <p>Have a question, suggestion, or want to report an issue? We'd love to hear from you. Fill in the form below or reach out directly.</p>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin:20px 0">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;flex:1;min-width:180px">
+          <div style="font-size:20px;margin-bottom:6px">📧</div>
+          <div style="font-size:13px;color:var(--text3)">General</div>
+          <a href="mailto:contact@animerush.in" style="font-size:14px;color:var(--accent)">contact@animerush.in</a>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;flex:1;min-width:180px">
+          <div style="font-size:20px;margin-bottom:6px">⚖️</div>
+          <div style="font-size:13px;color:var(--text3)">DMCA / Legal</div>
+          <a href="mailto:dmca@animerush.in" style="font-size:14px;color:var(--accent)">dmca@animerush.in</a>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;flex:1;min-width:180px">
+          <div style="font-size:20px;margin-bottom:6px">💬</div>
+          <div style="font-size:13px;color:var(--text3)">Community</div>
+          <a href="#" style="font-size:14px;color:var(--accent)">Join Discord</a>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h2 style="margin-top:0">Send a Message</h2>
+        <div class="form-group"><label>Your Name</label><input type="text" id="cName" placeholder="Yamada Taro"/></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="cEmail" placeholder="you@example.com"/></div>
+        <div class="form-group">
+          <label>Subject</label>
+          <select id="cSubject">
+            <option>General Question</option>
+            <option>Report a Bug</option>
+            <option>Request an Anime</option>
+            <option>Broken Video / Episode</option>
+            <option>DMCA / Copyright</option>
+            <option>Advertise with Us</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea id="cMsg" placeholder="Describe your issue or question..."></textarea></div>
+        <button class="submit-btn" onclick="submitContact()">Send Message →</button>
+      </div>`
+  },
+  'privacy': {
+    title: 'Privacy Policy — AnimeRush',
+    content: `
+      <h1>Privacy Policy</h1>
+      <p><em>Last updated: January 1, 2025</em></p>
+      <p>AnimeRush ("we", "us", "our") respects your privacy. This Privacy Policy explains how we collect, use, disclose and safeguard your information when you visit <strong>animerush.in</strong>.</p>
+      <h2>Information We Collect</h2>
+      <ul>
+        <li><strong>Usage Data:</strong> Pages visited, time spent, browser type, device info collected automatically via analytics.</li>
+        <li><strong>Cookies:</strong> We use cookies for analytics (Google Analytics) and advertising (Google AdSense). You can disable cookies in your browser settings.</li>
+        <li><strong>Voluntarily Provided:</strong> If you contact us, we collect your name, email and message content.</li>
+      </ul>
+      <h2>How We Use Your Information</h2>
+      <ul>
+        <li>To operate and improve our website</li>
+        <li>To show relevant advertisements via Google AdSense</li>
+        <li>To analyse website traffic and user behaviour</li>
+        <li>To respond to your queries</li>
+      </ul>
+      <h2>Third-Party Services</h2>
+      <p>We use the following third-party services which have their own privacy policies:</p>
+      <ul>
+        <li><a href="https://policies.google.com/privacy" target="_blank">Google AdSense / Analytics</a></li>
+        <li><a href="https://jikan.moe" target="_blank">Jikan API (MyAnimeList data)</a></li>
+        <li><a href="https://anilist.co/terms" target="_blank">AniList API</a></li>
+      </ul>
+      <h2>Cookies</h2>
+      <p>We use cookies and similar tracking technologies to track activity on our service. Cookies are small data files placed on your device. You can instruct your browser to refuse all cookies or indicate when a cookie is being sent.</p>
+      <h2>Children's Privacy</h2>
+      <p>Our service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13.</p>
+      <h2>Changes to This Policy</h2>
+      <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.</p>
+      <h2>Contact</h2>
+      <p>For privacy-related questions, email us at <a href="mailto:privacy@animerush.in">privacy@animerush.in</a>.</p>`
+  },
+  'terms': {
+    title: 'Terms of Use — AnimeRush',
+    content: `
+      <h1>Terms of Use</h1>
+      <p><em>Last updated: January 1, 2025</em></p>
+      <p>By accessing or using AnimeRush at <strong>animerush.in</strong>, you agree to be bound by these Terms of Use. Please read them carefully.</p>
+      <h2>1. Acceptance of Terms</h2>
+      <p>By using our website, you confirm that you are at least 13 years old and agree to these terms. If you do not agree, please do not use AnimeRush.</p>
+      <h2>2. Use of the Service</h2>
+      <ul>
+        <li>AnimeRush is provided for personal, non-commercial use only.</li>
+        <li>You may not use the service for any illegal purpose or in violation of any regulations.</li>
+        <li>You may not attempt to hack, scrape excessively, or disrupt our servers.</li>
+        <li>You may not reproduce or redistribute content from AnimeRush without permission.</li>
+      </ul>
+      <h2>3. Content Disclaimer</h2>
+      <p>AnimeRush does not host any video content on its servers. All video content is embedded from third-party sources. We are not responsible for the availability, accuracy or legality of third-party content.</p>
+      <h2>4. Intellectual Property</h2>
+      <p>All anime titles, characters and related media are the intellectual property of their respective owners and creators. AnimeRush does not claim ownership of any anime content.</p>
+      <h2>5. Advertising</h2>
+      <p>Our service is supported by advertising. By using AnimeRush, you agree to view advertisements served by Google AdSense and other advertising partners.</p>
+      <h2>6. Limitation of Liability</h2>
+      <p>AnimeRush is provided "as is" without warranties of any kind. We shall not be liable for any indirect, incidental, special or consequential damages arising from your use of the service.</p>
+      <h2>7. Changes</h2>
+      <p>We reserve the right to modify these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms.</p>
+      <h2>8. Contact</h2>
+      <p>For questions about these Terms, contact us at <a href="mailto:legal@animerush.in">legal@animerush.in</a>.</p>`
+  },
+  'dmca': {
+    title: 'DMCA Policy — AnimeRush',
+    content: `
+      <h1>DMCA / Copyright Policy ⚖️</h1>
+      <p>AnimeRush respects the intellectual property rights of content creators and rights holders. We comply with the Digital Millennium Copyright Act (DMCA) and similar international copyright laws.</p>
+      <h2>Important Notice</h2>
+      <div style="background:rgba(230,57,70,.07);border:1px solid rgba(230,57,70,.2);border-radius:var(--radius);padding:16px 20px;margin:14px 0">
+        <strong>AnimeRush does not store any video files on its own servers.</strong> All video content displayed on our website is embedded from third-party hosting services. We are an index/aggregator service only.
+      </div>
+      <h2>DMCA Takedown Request</h2>
+      <p>If you are a copyright owner and believe that content on AnimeRush infringes your rights, you may submit a DMCA takedown notice to us. Your notice must include:</p>
+      <ul>
+        <li>Your physical or electronic signature (or of a person authorised to act on your behalf)</li>
+        <li>Identification of the copyrighted work claimed to be infringed</li>
+        <li>The specific URL(s) on AnimeRush where the infringing content appears</li>
+        <li>Your contact information (name, address, email, phone)</li>
+        <li>A statement that you have a good faith belief that the use is not authorised by the copyright owner</li>
+        <li>A statement, under penalty of perjury, that the information in your notice is accurate</li>
+      </ul>
+      <h2>Submit DMCA Notice</h2>
+      <p>Send your DMCA notice to: <a href="mailto:dmca@animerush.in">dmca@animerush.in</a></p>
+      <p>We will review your notice and respond within <strong>48–72 hours</strong>. Valid DMCA notices will result in the removal of the offending links within 24 hours of verification.</p>
+      <h2>Counter-Notice</h2>
+      <p>If you believe your content was removed by mistake or misidentification, you may submit a counter-notice to <a href="mailto:dmca@animerush.in">dmca@animerush.in</a>.</p>
+      <h2>Repeat Infringers</h2>
+      <p>AnimeRush will terminate access for users who are found to be repeat infringers in accordance with the DMCA.</p>`
+  }
+};
+
+// Render the right page
+const data = PAGES[PAGE] || PAGES['about'];
+document.title = data.title;
+document.querySelector('meta[name="description"]')?.setAttribute('content', data.title + ' — AnimeRush');
+document.getElementById('pageContent').innerHTML = `
+  <div class="breadcrumb" style="padding-top:0">
+    <a href="/">Home</a> › <span>${data.title.split('—')[0].trim()}</span>
+  </div>
+  ${data.content}`;
+
+function submitContact(){
+  const name = document.getElementById('cName')?.value.trim();
+  const email = document.getElementById('cEmail')?.value.trim();
+  const msg = document.getElementById('cMsg')?.value.trim();
+  if(!name||!email||!msg){ showToast('Please fill all fields.'); return; }
+  // In real site, send to Firebase / EmailJS / Formspree
+  showToast('✅ Message sent! We\'ll reply within 24 hours.');
+  document.getElementById('cName').value='';
+  document.getElementById('cEmail').value='';
+  document.getElementById('cMsg').value='';
+}
+</script>
+</body>
+</html>

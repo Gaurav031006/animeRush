@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Search Anime — AnimeRush</title>
+<meta name="description" content="Search thousands of anime series and movies on AnimeRush. Filter by genre, type, status, year and score."/>
+<meta name="robots" content="index,follow"/>
+<link rel="canonical" href="https://animerush.in/search.html"/>
+<link rel="stylesheet" href="style.css"/>
+
+<style>
+.filter-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px}
+.filter-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.filter-group{display:flex;flex-direction:column;gap:6px;flex:1;min-width:140px}
+.filter-group label{font-size:12px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.filter-group select,.filter-group input{background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:7px;padding:9px 12px;font-size:13px;outline:none;transition:border-color .2s;font-family:'Inter',sans-serif}
+.filter-group select:focus,.filter-group input:focus{border-color:var(--accent)}
+.filter-apply{background:var(--accent);border:none;color:#fff;border-radius:7px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s;white-space:nowrap;height:40px;align-self:flex-end}
+.filter-apply:hover{background:var(--accent-h)}
+.filter-reset{background:var(--bg4);border:1px solid var(--border2);color:var(--text2);border-radius:7px;padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;height:40px;align-self:flex-end}
+.filter-reset:hover{color:var(--text);border-color:var(--accent)}
+.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.result-count{font-size:14px;color:var(--text2)}
+.result-count span{color:var(--accent);font-weight:700}
+.sort-sel{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:7px;padding:7px 12px;font-size:13px;outline:none;cursor:pointer}
+.no-result{text-align:center;padding:60px 20px;color:var(--text3);font-size:15px}
+.no-result .nr-icon{font-size:48px;margin-bottom:12px}
+</style>
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<div class="search-hero">
+  <h1>🔍 Search Anime</h1>
+
+  <div class="search-big">
+    <input type="text" id="searchInput" placeholder="Search by title, genre, studio..." autocomplete="off"/>
+    <button onclick="doSearch()">🔍</button>
+  </div>
+
+  <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;font-size:13px;color:var(--text3)">
+    Popular:
+    <span class="quick-search" onclick="quickSearch('Jujutsu Kaisen')" style="color:var(--accent);cursor:pointer">Jujutsu Kaisen</span>
+    <span class="quick-search" onclick="quickSearch('One Piece')" style="color:var(--accent);cursor:pointer">One Piece</span>
+    <span class="quick-search" onclick="quickSearch('Demon Slayer')" style="color:var(--accent);cursor:pointer">Demon Slayer</span>
+    <span class="quick-search" onclick="quickSearch('Naruto')" style="color:var(--accent);cursor:pointer">Naruto</span>
+    <span class="quick-search" onclick="quickSearch('Attack on Titan')" style="color:var(--accent);cursor:pointer">Attack on Titan</span>
+  </div>
+</div>
+
+<div class="page-wrap" style="padding-top:28px;padding-bottom:50px">
+
+  <div class="filter-panel">
+    <div class="filter-row">
+
+      <div class="filter-group">
+        <label>Type</label>
+        <select id="fType">
+          <option value="">All Types</option>
+          <option value="tv">TV Series</option>
+          <option value="movie">Movie</option>
+          <option value="ova">OVA</option>
+          <option value="ona">ONA</option>
+          <option value="special">Special</option>
+          <option value="music">Music</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Status</label>
+        <select id="fStatus">
+          <option value="">All Status</option>
+          <option value="airing">Currently Airing</option>
+          <option value="complete">Finished</option>
+          <option value="upcoming">Not Yet Aired</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Genre</label>
+        <select id="fGenre">
+          <option value="">All Genres</option>
+          <option value="1">Action</option>
+          <option value="2">Adventure</option>
+          <option value="4">Comedy</option>
+          <option value="8">Drama</option>
+          <option value="10">Fantasy</option>
+          <option value="14">Horror</option>
+          <option value="7">Mystery</option>
+          <option value="22">Romance</option>
+          <option value="24">Sci-Fi</option>
+          <option value="36">Slice of Life</option>
+          <option value="37">Supernatural</option>
+          <option value="30">Sports</option>
+          <option value="17">Martial Arts</option>
+          <option value="28">Mecha</option>
+          <option value="23">School</option>
+          <option value="13">Historical</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Min Score</label>
+        <select id="fScore">
+          <option value="">Any Score</option>
+          <option value="9">9+ (Masterpiece)</option>
+          <option value="8">8+ (Great)</option>
+          <option value="7">7+ (Good)</option>
+          <option value="6">6+ (Average)</option>
+        </select>
+      </div>
+
+      <div class="filter-group" style="min-width:100px;max-width:120px">
+        <label>Year</label>
+        <input type="number" id="fYear" placeholder="e.g. 2024" min="1960" max="2030"/>
+      </div>
+
+      <div class="filter-group" style="flex:0">
+        <label>&nbsp;</label>
+        <div style="display:flex;gap:8px">
+          <button class="filter-apply" onclick="doSearch()">Apply</button>
+          <button class="filter-reset" onclick="resetFilters()">Reset</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="result-header" id="resultHeader" style="display:none">
+    <div class="result-count" id="resultCount"></div>
+
+    <select class="sort-sel" id="sortSel" onchange="doSearch()">
+      <option value="score">Sort: Top Score</option>
+      <option value="popularity">Sort: Most Popular</option>
+      <option value="title">Sort: A–Z</option>
+      <option value="start_date">Sort: Newest</option>
+    </select>
+  </div>
+
+  <div class="grid-lg" id="resultsGrid"></div>
+
+  <div id="noResult" class="no-result" style="display:none">
+    <div class="nr-icon">🔍</div>
+    <p>No anime found for your search.</p>
+    <p style="font-size:13px;margin-top:8px">Try different keywords or filters.</p>
+  </div>
+
+  <div class="pagination" id="pagination" style="display:none"></div>
+
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+
+<script>
+let currentPage = 1;
+let totalPages = 1;
+
+const urlParams = new URLSearchParams(location.search);
+const initQ = urlParams.get("q") || "";
+
+if(initQ){
+  document.getElementById("searchInput").value = initQ;
+  setTimeout(function(){
+    doSearch(1);
+  },300);
+}else{
+  loadPopular();
+}
+
+document.getElementById("searchInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    doSearch(1);
+  }
+});
+
+async function doSearch(page=1){
+  currentPage = page;
+
+  const q = document.getElementById("searchInput").value.trim();
+  const type = document.getElementById("fType").value;
+  const status = document.getElementById("fStatus").value;
+  const genres = document.getElementById("fGenre").value;
+  const score = document.getElementById("fScore").value;
+  const year = document.getElementById("fYear").value;
+  const orderBy = document.getElementById("sortSel").value;
+
+  const el = document.getElementById("resultsGrid");
+
+  el.innerHTML = skeletonCards(12);
+  document.getElementById("noResult").style.display = "none";
+  document.getElementById("resultHeader").style.display = "flex";
+  document.getElementById("pagination").style.display = "none";
+
+  const url = new URLSearchParams();
+
+  if(q) url.set("q", q);
+  if(type) url.set("type", type);
+  if(status) url.set("status", status);
+  if(genres) url.set("genres", genres);
+  if(score) url.set("score", score);
+  if(year) url.set("year", year);
+
+  window.history.replaceState(
+    {},
+    "",
+    "search.html" + (url.toString() ? "?" + url.toString() : "")
+  );
+
+  try{
+    const params = {
+      page:page,
+      limit:24,
+      sfw:true,
+      order_by:orderBy,
+      sort:"desc"
+    };
+
+    if(q) params.q = q;
+    if(type) params.type = type;
+    if(status) params.status = status;
+    if(genres) params.genres = genres;
+    if(score) params.min_score = score;
+
+    if(year){
+      params.start_date = year + "-01-01";
+      params.end_date = year + "-12-31";
+    }
+
+    const d = await Jikan.get("/anime", params);
+
+    const list = d.data || [];
+
+    totalPages = d.pagination?.last_visible_page || 1;
+
+    const total = d.pagination?.items?.total || list.length;
+
+    document.getElementById("resultCount").innerHTML =
+      `Showing <span>${list.length}</span> of <span>${total}</span> results${q ? ' for "<strong>' + q + '</strong>"' : ""}`;
+
+    if(!list.length){
+      el.innerHTML = "";
+      document.getElementById("noResult").style.display = "block";
+      document.getElementById("resultHeader").style.display = "none";
+      return;
+    }
+
+    el.innerHTML = list.map(function(a){
+      return makeAnimeCard(a,"jikan");
+    }).join("");
+
+    renderPagination();
+
+  }catch(e){
+    el.innerHTML = `
+      <p style="color:var(--text3);padding:20px;grid-column:1/-1">
+        Search failed. Please try again.<br>
+        <small>${e.message}</small>
+      </p>
+    `;
+
+    console.error(e);
+  }
+}
+
+async function loadPopular(){
+  const el = document.getElementById("resultsGrid");
+
+  el.innerHTML = skeletonCards(12);
+
+  document.getElementById("resultHeader").style.display = "flex";
+  document.getElementById("resultCount").innerHTML = "Showing <span>Trending</span> anime";
+
+  try{
+    const d = await Jikan.topAnime(1,"bypopularity");
+
+    const list = d.data || [];
+
+    totalPages = d.pagination?.last_visible_page || 1;
+
+    el.innerHTML = list.map(function(a){
+      return makeAnimeCard(a,"jikan");
+    }).join("");
+
+    renderPagination();
+
+  }catch(e){
+    el.innerHTML = `
+      <p style="color:var(--text3);padding:20px;grid-column:1/-1">
+        Failed to load. Refresh the page.
+      </p>
+    `;
+  }
+}
+
+function renderPagination(){
+  const pg = document.getElementById("pagination");
+
+  if(totalPages <= 1){
+    pg.style.display = "none";
+    return;
+  }
+
+  pg.style.display = "flex";
+
+  let html = "";
+
+  if(currentPage > 1){
+    html += `<button class="page-btn" onclick="doSearch(${currentPage - 1})">◀ Prev</button>`;
+  }
+
+  const from = Math.max(1,currentPage - 2);
+  const to = Math.min(totalPages,currentPage + 2);
+
+  if(from > 1){
+    html += `<button class="page-btn" onclick="doSearch(1)">1</button>`;
+    if(from > 2){
+      html += `<span style="color:var(--text3);padding:8px">…</span>`;
+    }
+  }
+
+  for(let i = from; i <= to; i++){
+    html += `<button class="page-btn${i === currentPage ? " active" : ""}" onclick="doSearch(${i})">${i}</button>`;
+  }
+
+  if(to < totalPages){
+    if(to < totalPages - 1){
+      html += `<span style="color:var(--text3);padding:8px">…</span>`;
+    }
+
+    html += `<button class="page-btn" onclick="doSearch(${totalPages})">${totalPages}</button>`;
+  }
+
+  if(currentPage < totalPages){
+    html += `<button class="page-btn" onclick="doSearch(${currentPage + 1})">Next ▶</button>`;
+  }
+
+  pg.innerHTML = html;
+}
+
+function quickSearch(q){
+  document.getElementById("searchInput").value = q;
+  doSearch(1);
+}
+
+function resetFilters(){
+  ["fType","fStatus","fGenre","fScore","sortSel"].forEach(function(id){
+    const el = document.getElementById(id);
+
+    if(id === "sortSel"){
+      el.value = "score";
+    }else{
+      el.value = "";
+    }
+  });
+
+  document.getElementById("fYear").value = "";
+
+  doSearch(1);
+}
+
+function skeletonCards(n){
+  return Array(n).fill(`
+    <div class="skel-card">
+      <div class="skel-thumb skeleton" style="padding-bottom:148%"></div>
+      <div class="skel-line skeleton"></div>
+      <div class="skel-line short skeleton"></div>
+    </div>
+  `).join("");
+}
+</script>
+
+</body>
+</html>

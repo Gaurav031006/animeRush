@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Manga Details — AnimeRush</title>
+
+<link rel="stylesheet" href="style.css"/>
+
+<style>
+.manga-wrap{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:30px;
+  padding-top:30px;
+  padding-bottom:50px;
+}
+
+.manga-cover img{
+  width:100%;
+  border-radius:16px;
+}
+
+.manga-title{
+  font-size:42px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+
+.manga-meta{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+  color:var(--text2);
+}
+
+.manga-desc{
+  line-height:1.8;
+  color:var(--text2);
+}
+
+.official-links{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px;
+}
+
+.official-links a{
+  background:var(--accent);
+  color:#fff;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:700;
+}
+
+@media(max-width:768px){
+
+  .manga-wrap{
+    grid-template-columns:1fr;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<div class="page-wrap">
+
+  <div class="manga-wrap">
+
+    <div class="manga-cover">
+      <img id="mangaImg">
+    </div>
+
+    <div>
+
+      <div class="manga-title" id="mangaTitle">
+        Loading...
+      </div>
+
+      <div class="manga-meta">
+        <span id="mangaScore"></span>
+        <span id="mangaStatus"></span>
+        <span id="mangaType"></span>
+        <span id="mangaChapters"></span>
+      </div>
+
+      <div class="manga-desc" id="mangaSynopsis">
+      </div>
+
+      <div class="official-links">
+
+        <a id="amazonBtn" target="_blank">
+          Buy on Amazon
+        </a>
+
+        <a id="malBtn" target="_blank">
+          View on MyAnimeList
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<footer id="footer"></footer>
+
+<script src="app.js"></script>
+
+<script>
+const params = new URLSearchParams(location.search);
+const ID = params.get("id");
+
+async function loadManga(){
+
+  try{
+
+    const d = await Jikan.get(`/manga/${ID}/full`);
+
+    const m = d.data;
+
+    document.title =
+      `${m.title} — Manga Details`;
+
+    document.getElementById("mangaImg").src =
+      m.images?.jpg?.large_image_url ||
+      m.images?.jpg?.image_url;
+
+    document.getElementById("mangaTitle").textContent =
+      m.title;
+
+    document.getElementById("mangaScore").textContent =
+      "★ " + (m.score || "N/A");
+
+    document.getElementById("mangaStatus").textContent =
+      m.status || "";
+
+    document.getElementById("mangaType").textContent =
+      m.type || "";
+
+    document.getElementById("mangaChapters").textContent =
+      (m.chapters || "?") + " Chapters";
+
+    document.getElementById("mangaSynopsis").textContent =
+      m.synopsis || "No synopsis available.";
+
+    const search =
+      encodeURIComponent(m.title + " manga");
+
+    document.getElementById("amazonBtn").href =
+      `https://www.amazon.in/s?k=${search}`;
+
+    document.getElementById("malBtn").href =
+      m.url;
+
+  }catch(e){
+
+    document.querySelector(".page-wrap").innerHTML =
+      "<h2>Failed to load manga.</h2>";
+
+  }
+
+}
+
+loadManga();
+</script>
+
+</body>
+</html>

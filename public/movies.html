@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Anime Movies — AnimeRush</title>
+<meta name="description" content="Watch anime movies online free in HD on AnimeRush. Stream the best anime movies including Demon Slayer, Your Name, Spirited Away and more."/>
+<meta name="robots" content="index,follow"/>
+<link rel="canonical" href="https://animerush.in/movies"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.movies-hero{
+  background:linear-gradient(135deg,#0b0c10 0%,#10081e 50%,#0a1020 100%);
+  border-bottom:1px solid var(--border);padding:44px 0;position:relative;overflow:hidden;
+}
+.movies-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(67,97,238,.15),transparent 70%);
+}
+.movies-hero-inner{position:relative;max-width:1400px;margin:0 auto;padding:0 24px}
+.movies-hero h1{font-family:'Rajdhani',sans-serif;font-size:42px;font-weight:700;margin-bottom:10px}
+.movies-hero h1 em{color:var(--blue);font-style:normal}
+.movies-hero p{color:var(--text2);font-size:16px;max-width:520px}
+.featured-movies{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:30px}
+.fm-card{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  cursor:pointer;border:1px solid var(--border);
+  aspect-ratio:16/9;background:var(--bg3);
+  transition:transform .2s,border-color .2s;
+}
+.fm-card:hover{transform:scale(1.02);border-color:rgba(67,97,238,.5)}
+.fm-card img{width:100%;height:100%;object-fit:cover}
+.fm-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,transparent 50%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:14px;
+}
+.fm-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;margin-bottom:4px}
+.fm-meta{font-size:12px;color:var(--text2);display:flex;gap:10px}
+.fm-play{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:48px;height:48px;border-radius:50%;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;
+  opacity:0;transition:opacity .2s;
+}
+.fm-card:hover .fm-play{opacity:1}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<!-- HERO -->
+<div class="movies-hero">
+  <div class="movies-hero-inner">
+    <div class="breadcrumb" style="padding-top:0;margin-bottom:12px">
+      <a href="/">Home</a> › <span>Movies</span>
+    </div>
+    <h1>🎬 Anime <em>Movies</em></h1>
+    <p>Stream the greatest anime films — from Ghibli classics to the latest blockbusters. Free in HD.</p>
+  </div>
+</div>
+
+<div class="page-wrap" style="padding-top:28px;padding-bottom:50px">
+
+  <!-- TOP FEATURED MOVIES -->
+  <section class="section" style="padding-top:0">
+    <div class="sec-head"><div class="sec-title">🏆 Must-Watch Movies</div></div>
+    <div class="featured-movies" id="featuredMovies">
+      <!-- Loaded by JS -->
+      <div style="color:var(--text3);padding:20px;grid-column:1/-1">Loading featured movies...</div>
+    </div>
+  </section>
+
+  <!-- AD -->
+  <div style="text-align:center;margin:8px 0 24px">
+    <div class="ad-slot ad-resp">Advertisement — AdSense Banner</div>
+  </div>
+
+  <!-- FILTER STRIP -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center">
+    <select class="filter-sel" id="mGenre" onchange="loadMovies(1)">
+      <option value="">All Genres</option>
+      <option value="1">Action</option>
+      <option value="2">Adventure</option>
+      <option value="4">Comedy</option>
+      <option value="8">Drama</option>
+      <option value="10">Fantasy</option>
+      <option value="22">Romance</option>
+      <option value="37">Supernatural</option>
+      <option value="36">Slice of Life</option>
+    </select>
+    <select class="filter-sel" id="mScore" onchange="loadMovies(1)">
+      <option value="">Any Score</option>
+      <option value="9">9+ Masterpiece</option>
+      <option value="8">8+ Great</option>
+      <option value="7">7+ Good</option>
+    </select>
+    <select class="filter-sel" id="mSort" onchange="loadMovies(1)">
+      <option value="score">Top Rated</option>
+      <option value="popularity">Most Popular</option>
+      <option value="start_date">Newest</option>
+    </select>
+  </div>
+
+  <!-- RESULT COUNT -->
+  <div style="font-size:14px;color:var(--text3);margin-bottom:16px" id="movResult"></div>
+
+  <!-- GRID -->
+  <div class="grid-lg" id="moviesGrid"></div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+let currentPage=1, totalPages=1;
+
+// Must-watch hardcoded popular movie IDs
+const mustWatchIds = [
+  {id:5114,title:'Fullmetal Alchemist: Brotherhood',year:'2009',score:'9.1',img:'https://placehold.co/280x158/1c1d26/4361ee?text=FMA'},
+  {id:199,title:'Sen to Chihiro (Spirited Away)',year:'2001',score:'8.9',img:'https://placehold.co/280x158/1c1d26/06d6a0?text=Spirited'},
+  {id:9253,title:'Steins;Gate',year:'2011',score:'9.1',img:'https://placehold.co/280x158/1c1d26/7209b7?text=Steins'},
+  {id:38000,title:'Kimetsu no Yaiba: Mugen Ressha',year:'2020',score:'8.4',img:'https://placehold.co/280x158/1c1d26/e63946?text=DS+Movie'},
+];
+document.getElementById('featuredMovies').innerHTML = mustWatchIds.map(m=>`
+  <div class="fm-card" onclick="location.href='/anime/${m.id}'">
+    <img src="${m.img}" alt="${m.title}" onerror="imgFallback(this)"/>
+    <div class="fm-overlay">
+      <div class="fm-title">${m.title}</div>
+      <div class="fm-meta"><span>⭐ ${m.score}</span><span>${m.year}</span><span>Movie</span></div>
+    </div>
+    <div class="fm-play">▶</div>
+  </div>`).join('');
+
+async function loadMovies(page=1){
+  currentPage=page;
+  const grid=document.getElementById('moviesGrid');
+  grid.innerHTML=skeletonCards(12);
+  const genre=document.getElementById('mGenre').value;
+  const score=document.getElementById('mScore').value;
+  const sort =document.getElementById('mSort').value;
+  try{
+    const params={type:'movie',page,limit:24,order_by:sort,sort:'desc',sfw:true};
+    if(genre) params.genres=genre;
+    if(score) params.min_score=score;
+    const d=await Jikan.get('/anime',params);
+    const list=d.data||[];
+    totalPages=d.pagination?.last_visible_page||1;
+    const total=d.pagination?.items?.total||list.length;
+    document.getElementById('movResult').innerHTML=`<strong style="color:var(--text)">${list.length}</strong> of <strong style="color:var(--accent)">${total.toLocaleString()}</strong> anime movies`;
+    grid.innerHTML=list.length?list.map(a=>makeAnimeCard(a,'jikan')).join(''):'<p style="color:var(--text3);padding:20px;grid-column:1/-1">No movies found.</p>';
+    renderPagination();
+  }catch(e){
+    grid.innerHTML=`<p style="color:var(--text3);padding:20px;grid-column:1/-1">Failed to load movies.</p>`;
+    console.error(e);
+  }
+}
+
+function renderPagination(){
+  if(totalPages<=1){document.getElementById('pagination').innerHTML='';return;}
+  let html='';
+  if(currentPage>1) html+=`<button class="page-btn" onclick="loadMovies(${currentPage-1})">◀ Prev</button>`;
+  const from=Math.max(1,currentPage-2),to=Math.min(totalPages,currentPage+2);
+  if(from>1) html+=`<button class="page-btn" onclick="loadMovies(1)">1</button>${from>2?'<span style="color:var(--text3);padding:8px">…</span>':''}`;
+  for(let i=from;i<=to;i++) html+=`<button class="page-btn${i===currentPage?' active':''}" onclick="loadMovies(${i})">${i}</button>`;
+  if(to<totalPages) html+=`${to<totalPages-1?'<span style="color:var(--text3);padding:8px">…</span>':''}<button class="page-btn" onclick="loadMovies(${totalPages})">${totalPages}</button>`;
+  if(currentPage<totalPages) html+=`<button class="page-btn" onclick="loadMovies(${currentPage+1})">Next ▶</button>`;
+  document.getElementById('pagination').innerHTML=html;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function skeletonCards(n){
+  return Array(n).fill(`<div class="skel-card"><div class="skel-thumb skeleton" style="padding-bottom:148%"></div><div class="skel-line skeleton"></div><div class="skel-line short skeleton"></div></div>`).join('');
+}
+
+loadMovies(1);
+</script>
+</body>
+</html>

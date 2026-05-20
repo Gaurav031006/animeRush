@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title id="pageTitle">Watch — AnimeRush</title>
+<meta name="description" id="pageDesc" content="Watch anime trailers, episode guide and official links on AnimeRush."/>
+<link rel="stylesheet" href="style.css"/>
+
+<style>
+.watch-info-strip{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-top:14px}
+.anime-link{font-size:13px;color:var(--text3);margin-bottom:4px}
+.anime-link a{color:var(--accent)}
+.ep-title-big{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700}
+.ep-meta-row{display:flex;gap:16px;margin-top:10px;font-size:13px;color:var(--text2);flex-wrap:wrap}
+
+.trailer-wrap{width:100%;background:#000;border-radius:var(--radius);overflow:hidden}
+.trailer-wrap iframe{display:block;width:100%;height:500px;border:0}
+
+.no-trailer{
+  min-height:420px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:var(--text3);
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px;
+}
+
+.no-trailer a{
+  color:var(--accent);
+  font-weight:700;
+  text-decoration:none;
+}
+
+.official-watch{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.official-btn{padding:10px 18px;border-radius:8px;text-decoration:none;color:#fff;font-weight:600;font-size:13px;transition:.2s}
+.official-btn:hover{transform:translateY(-2px)}
+.crunchy{background:#f47521}
+.netflix{background:#e50914}
+.prime{background:#00a8e1}
+.muse{background:#ff2d55}
+
+@media(max-width:768px){
+  .trailer-wrap iframe{height:260px}
+  .official-watch{flex-direction:column}
+  .official-btn{text-align:center}
+}
+</style>
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<div class="watch-layout">
+
+  <div>
+
+    <div class="breadcrumb" style="padding-top:0;padding-bottom:10px">
+      <a href="index.html">Home</a>
+      ›
+      <a id="bcAnime" href="anime-list.html">Anime</a>
+      ›
+      <span id="bcEp">Episode</span>
+    </div>
+
+    <div style="margin-bottom:10px">
+      <div class="ad-slot ad-resp">Advertisement — AdSense Leaderboard</div>
+    </div>
+
+    <div class="player-wrap" id="playerWrap">
+      <div class="trailer-wrap" id="trailerWrap">
+        <iframe
+          id="trailerFrame"
+          width="100%"
+          height="500"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <div class="next-prev">
+      <button class="np-btn" id="prevBtn" onclick="goPrev()" disabled>◀ Prev Ep</button>
+      <button class="np-btn" id="nextBtn" onclick="goNext()" disabled>Next Ep ▶</button>
+    </div>
+
+    <div class="watch-info-strip">
+      <div id="watchInfo">
+        <div class="anime-link">Loading anime info...</div>
+      </div>
+
+      <div class="official-watch">
+        <a id="crunchyBtn" target="_blank" rel="noopener" class="official-btn crunchy">Watch on Crunchyroll</a>
+        <a id="netflixBtn" target="_blank" rel="noopener" class="official-btn netflix">Watch on Netflix</a>
+        <a id="primeBtn" target="_blank" rel="noopener" class="official-btn prime">Watch on Prime Video</a>
+        <a id="museBtn" target="_blank" rel="noopener" class="official-btn muse">Watch on Muse Asia</a>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="ad-slot ad-resp">Advertisement — AdSense In-Article</div>
+    </div>
+
+  </div>
+
+  <div class="ep-panel">
+
+    <div class="ep-panel-head">
+      <div class="ep-panel-title" id="epPanelTitle">Episodes</div>
+      <input class="ep-search" type="text" placeholder="Ep #" id="epSearchInput" oninput="filterEpList()"/>
+    </div>
+
+    <div class="ep-filter" id="epFilters">
+      <button class="ep-filter-btn active" onclick="setFilter('all',this)">All</button>
+    </div>
+
+    <div class="ep-list" id="epList">
+      <div style="color:var(--text3);font-size:13px;padding:20px;text-align:center">
+        Loading episodes...
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const MAL_ID = params.get("id");
+let curEp = parseInt(params.get("ep")) || 1;
+const IS_DUB = params.get("dub") === "1";
+
+let animeInfo = null;
+let allEps = [];
+let totalEps = 1;
+let currentFilter = "all";
+
+async function init(){
+  if(!MAL_ID){
+    document.getElementById("watchInfo").innerHTML = `
+      <div class="anime-link">Anime ID missing.</div>
+    `;
+
+    document.getElementById("epList").innerHTML = `
+      <p style="color:var(--text3);font-size:13px;padding:16px">
+        Anime ID missing.
+      </p>
+    `;
+
+    return;
+  }
+
+  await loadAnimeInfo();
+  await loadEpisodeList();
+}
+
+async function loadAnimeInfo(){
+  try{
+    const d = await Jikan.animeById(MAL_ID);
+    animeInfo = d.data;
+
+    const titleText = animeInfo.title || animeInfo.title_english || "Anime";
+    const title = encodeURIComponent(titleText);
+
+    document.getElementById("crunchyBtn").href =
+      `https://www.crunchyroll.com/search?q=${title}`;
+
+    document.getElementById("netflixBtn").href =
+      `https://www.netflix.com/search?q=${title}`;
+
+    document.getElementById("primeBtn").href =
+      `https://www.primevideo.com/search/ref=atv_nb_sr?phrase=${title}`;
+
+    document.getElementById("museBtn").href =
+      `https://www.youtube.com/@MuseAsia/search?query=${title}`;
+
+    const trailer = animeInfo.trailer?.youtube_id;
+
+    if(trailer){
+      document.getElementById("trailerFrame").src =
+        `https://www.youtube.com/embed/${trailer}`;
+    }else{
+      const ytSearch =
+        `https://www.youtube.com/results?search_query=${encodeURIComponent(titleText + " official anime trailer")}`;
+
+      document.getElementById("playerWrap").innerHTML = `
+        <div class="no-trailer">
+          <div>
+            <strong>Trailer unavailable for this anime.</strong><br/><br/>
+            <a href="${ytSearch}" target="_blank" rel="noopener">
+              ▶ Search official trailer on YouTube
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    totalEps = animeInfo.episodes || 1;
+
+    document.title =
+      `${titleText} Episode ${curEp} — AnimeRush`;
+
+    document.getElementById("pageDesc").content =
+      `Explore ${titleText} episode ${curEp} guide, trailer and official streaming links on AnimeRush.`;
+
+    document.getElementById("bcAnime").textContent = titleText;
+    document.getElementById("bcAnime").href = `anime.html?id=${MAL_ID}`;
+    document.getElementById("bcEp").textContent = `Episode ${curEp}`;
+    document.getElementById("epPanelTitle").textContent = `${totalEps || "?"} Episodes`;
+
+    document.getElementById("watchInfo").innerHTML = `
+      <div class="anime-link">
+        Anime:
+        <a href="anime.html?id=${MAL_ID}">${titleText}</a>
+      </div>
+
+      <div class="ep-title-big">
+        Episode ${curEp} Guide
+      </div>
+
+      <div class="ep-meta-row">
+        <span>⭐ ${animeInfo.score || "N/A"}</span>
+        <span>📺 ${animeInfo.type || "TV"}</span>
+        <span>🗓 ${animeInfo.year || ""}</span>
+        <span>${animeInfo.status || ""}</span>
+      </div>
+
+      <div style="margin-top:12px;font-size:13px;color:var(--text3);line-height:1.7;max-width:600px">
+        ${animeInfo.synopsis ? animeInfo.synopsis.slice(0,300) : ""}
+        ${animeInfo.synopsis && animeInfo.synopsis.length > 300 ? "..." : ""}
+      </div>
+    `;
+
+    document.getElementById("prevBtn").disabled = curEp <= 1;
+    document.getElementById("nextBtn").disabled = curEp >= totalEps;
+
+  }catch(e){
+    console.warn(e);
+
+    document.getElementById("watchInfo").innerHTML = `
+  ...
+`;
+
+saveHistory({
+  type:"Anime",
+  title:titleText,
+  ep:curEp,
+  url:`watch.html?id=${MAL_ID}&ep=${curEp}`
+});
+
+document.getElementById("prevBtn").disabled = curEp <= 1;
+document.getElementById("nextBtn").disabled = curEp >= totalEps;
+
+    document.getElementById("playerWrap").innerHTML = `
+      <div class="no-trailer">
+        Unable to load anime details.
+      </div>
+    `;
+  }
+}
+
+async function loadEpisodeList(){
+  const el = document.getElementById("epList");
+
+  try{
+    let collected = [];
+
+    const d1 = await Jikan.episodes(MAL_ID,1);
+    collected = d1.data || [];
+
+    const lastPg = d1.pagination?.last_visible_page || 1;
+
+    for(let p = 2; p <= Math.min(lastPg,5); p++){
+      await sleep(400);
+      const more = await Jikan.episodes(MAL_ID,p);
+      collected = collected.concat(more.data || []);
+    }
+
+    allEps = collected;
+
+    if(!allEps.length && animeInfo?.episodes){
+      allEps = Array.from({length:animeInfo.episodes}, function(_,i){
+        return {
+          mal_id:i + 1,
+          title:"Episode " + (i + 1),
+          aired:null,
+          filler:false
+        };
+      });
+    }
+
+    buildEpisodeFilters();
+    renderEpList(allEps);
+
+  }catch(e){
+    console.warn(e);
+
+    if(animeInfo?.episodes){
+      allEps = Array.from({length:animeInfo.episodes}, function(_,i){
+        return {
+          mal_id:i + 1,
+          title:"Episode " + (i + 1),
+          aired:null,
+          filler:false
+        };
+      });
+
+      buildEpisodeFilters();
+      renderEpList(allEps);
+    }else{
+      el.innerHTML = `
+        <p style="color:var(--text3);font-size:13px;padding:16px">
+          Episode list unavailable.
+        </p>
+      `;
+    }
+  }
+}
+
+function buildEpisodeFilters(){
+  const filters = document.getElementById("epFilters");
+
+  if(!allEps.length) return;
+
+  if(allEps.length <= 24){
+    filters.innerHTML = `
+      <button class="ep-filter-btn active" onclick="setFilter('all',this)">All</button>
+    `;
+    return;
+  }
+
+  const chunk = 24;
+
+  let html = `
+    <button class="ep-filter-btn active" onclick="setFilter('all',this)">All</button>
+  `;
+
+  for(let i = 0; i < allEps.length; i += chunk){
+    const from = allEps[i].mal_id;
+    const to = allEps[Math.min(i + chunk - 1, allEps.length - 1)].mal_id;
+
+    html += `
+      <button class="ep-filter-btn" onclick="setFilter('${from}-${to}',this)">
+        ${from}–${to}
+      </button>
+    `;
+  }
+
+  filters.innerHTML = html;
+}
+
+function setFilter(f, btn){
+  currentFilter = f;
+
+  document.querySelectorAll(".ep-filter-btn").forEach(function(b){
+    b.classList.remove("active");
+  });
+
+  btn.classList.add("active");
+  filterEpList();
+}
+
+function filterEpList(){
+  const q = (document.getElementById("epSearchInput")?.value || "").toLowerCase();
+
+  let list = allEps;
+
+  if(currentFilter !== "all"){
+    const parts = currentFilter.split("-").map(Number);
+    const from = parts[0];
+    const to = parts[1];
+
+    list = list.filter(function(e){
+      return e.mal_id >= from && e.mal_id <= to;
+    });
+  }
+
+  if(q){
+    list = list.filter(function(e){
+      return String(e.mal_id).includes(q) ||
+             String(e.title || "").toLowerCase().includes(q);
+    });
+  }
+
+  renderEpList(list);
+}
+
+function renderEpList(list){
+  const el = document.getElementById("epList");
+
+  if(!list.length){
+    el.innerHTML = `
+      <p style="color:var(--text3);font-size:13px;padding:16px">
+        No episodes found.
+      </p>
+    `;
+    return;
+  }
+
+  el.innerHTML = list.map(function(e){
+    const n = e.mal_id;
+    const isActive = n === curEp;
+    const isFiller = e.filler;
+
+    return `
+      <div class="ep-item${isActive ? " active" : ""}" onclick="changeEp(${n})" id="ep_${n}">
+        <div class="ep-num">${n}</div>
+
+        <div class="ep-info">
+          <div class="ep-name">
+            ${e.title || "Episode " + n}
+            ${isFiller ? '<span style="color:var(--yellow);font-size:10px">[Filler]</span>' : ""}
+          </div>
+
+          ${e.aired ? `
+            <div class="ep-dur">
+              ${new Date(e.aired).toLocaleDateString("en-IN", {
+                day:"numeric",
+                month:"short",
+                year:"numeric"
+              })}
+            </div>
+          ` : ""}
+
+          <div class="ep-sub-dub">
+            <span class="ep-tag sub">Info</span>
+            <span class="ep-tag dub">Official</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  setTimeout(function(){
+    const ac = document.getElementById("ep_" + curEp);
+
+    if(ac){
+      ac.scrollIntoView({
+        block:"center",
+        behavior:"smooth"
+      });
+    }
+  },100);
+}
+
+function changeEp(n){
+  curEp = n;
+
+  location.href =
+    `watch.html?id=${encodeURIComponent(MAL_ID)}&ep=${n}${IS_DUB ? "&dub=1" : ""}`;
+}
+
+function goPrev(){
+  if(curEp > 1){
+    changeEp(curEp - 1);
+  }
+}
+
+function goNext(){
+  if(curEp < totalEps){
+    changeEp(curEp + 1);
+  }
+}
+
+init();
+
+function saveHistory(item){
+  const email = localStorage.getItem("ar_current_user");
+  if(!email) return;
+
+  const key = "ar_history_" + email;
+  let data = JSON.parse(localStorage.getItem(key) || "[]");
+
+  data = data.filter(x => x.url !== item.url);
+
+  data.push({
+    ...item,
+    time:Date.now()
+  });
+
+  localStorage.setItem(key, JSON.stringify(data.slice(-30)));
+}
+</script>
+
+</body>
+</html>

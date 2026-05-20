@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title id="pageTitle">Anime — AnimeRush</title>
+<meta name="description" id="pageDesc" content="Watch anime online free in HD on AnimeRush."/>
+<meta name="robots" content="index,follow"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+.chars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.char-card{background:var(--bg3);border-radius:8px;overflow:hidden;cursor:pointer;transition:transform .18s}
+.char-card:hover{transform:translateY(-3px)}
+.char-img{width:100%;aspect-ratio:2/3;object-fit:cover;background:var(--bg4)}
+.char-info{padding:8px 9px}
+.char-name{font-size:12px;font-weight:600;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.char-role{font-size:10px;color:var(--text3);margin-top:2px}
+.rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.source-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.src-btn{
+  background:var(--bg4);border:1px solid var(--border2);color:var(--text2);
+  border-radius:7px;padding:8px 18px;font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;
+}
+.src-btn.active,.src-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ep-grid-home{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:7px;margin-top:14px}
+.ep-num-btn{
+  background:var(--bg4);border:1px solid var(--border);color:var(--text2);
+  border-radius:6px;padding:8px 4px;text-align:center;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .18s;
+}
+.ep-num-btn:hover,.ep-num-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.info-table{width:100%;border-collapse:collapse;font-size:13px}
+.info-table td{padding:7px 0;border-bottom:1px solid var(--border);vertical-align:top}
+.info-table td:first-child{color:var(--text3);width:130px;font-weight:500}
+</style>
+</head>
+<body>
+<div id="navbar"></div>
+
+<!-- BREADCRUMB -->
+<div class="page-wrap">
+  <div class="breadcrumb">
+    <a href="/">Home</a> › <a href="/pages/anime-list.html">Anime</a> › <span id="bcTitle">Loading...</span>
+  </div>
+</div>
+
+<!-- ANIME HERO -->
+<div class="anime-hero">
+  <div class="anime-hero-inner" id="animeHero">
+    <div style="color:var(--text3);padding:40px">Loading anime info...</div>
+  </div>
+</div>
+
+<!-- TABS SECTION -->
+<div class="page-wrap" style="padding-top:30px;padding-bottom:50px">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('episodes')">Episodes</div>
+    <div class="tab" onclick="switchTab('info')">Details</div>
+    <div class="tab" onclick="switchTab('characters')">Characters</div>
+    <div class="tab" onclick="switchTab('related')">Related</div>
+  </div>
+
+  <!-- EPISODES TAB -->
+  <div class="tab-content active" id="tab-episodes">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div style="font-size:14px;color:var(--text3)" id="epCount">Loading episodes...</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="epSearch" placeholder="Search ep..." oninput="filterEps()"
+          style="background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:7px 12px;font-size:13px;outline:none;width:130px"/>
+        <select id="epSort" onchange="filterEps()"
+          style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:6px;padding:7px 12px;font-size:13px;outline:none">
+          <option value="asc">EP 1 → Last</option>
+          <option value="desc">Last → EP 1</option>
+        </select>
+      </div>
+    </div>
+    <!-- Range selector for 100+ eps -->
+    <div id="epRangeWrap" style="display:none;display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px" id="epRanges"></div>
+    <!-- Episode number grid -->
+    <div class="ep-grid-home" id="epGrid"></div>
+    <div id="epLoadMore" style="text-align:center;padding:16px;display:none">
+      <button class="btn-ghost" onclick="loadMoreEps()" style="padding:10px 28px">Load More Episodes</button>
+    </div>
+  </div>
+
+  <!-- DETAILS TAB -->
+  <div class="tab-content" id="tab-info">
+    <div id="animeDetails" style="max-width:700px">
+      <table class="info-table" id="infoTable"></table>
+    </div>
+  </div>
+
+  <!-- CHARACTERS TAB -->
+  <div class="tab-content" id="tab-characters">
+    <div class="chars-grid" id="charsGrid">
+      <p style="color:var(--text3);padding:20px">Click 'Characters' tab to load.</p>
+    </div>
+  </div>
+
+  <!-- RELATED TAB -->
+  <div class="tab-content" id="tab-related">
+    <div class="grid" id="relatedGrid">
+      <p style="color:var(--text3);padding:20px">Click 'Related' tab to load.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RECOMMENDATIONS -->
+<div class="page-wrap" style="padding-bottom:50px">
+  <div class="sec-head"><div class="sec-title">💡 Recommended for You</div></div>
+  <div class="grid" id="recoGrid"></div>
+</div>
+
+<footer id="footer"></footer>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+let MAL_ID = location.pathname.split('/').pop();
+if(!MAL_ID || isNaN(MAL_ID)) MAL_ID = params.get('id');
+
+let animeData = null;
+let allEpisodes = [];
+let epPage = 1;
+let epTotalPages = 1;
+let charsLoaded = false;
+let relatedLoaded = false;
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const names=['episodes','info','characters','related'];
+    t.classList.toggle('active', names[i]===name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>{
+    c.classList.toggle('active', c.id==='tab-'+name);
+  });
+  if(name==='characters'&&!charsLoaded) loadChars();
+  if(name==='related'&&!relatedLoaded) loadRelated();
+}
+
+async function init(){
+  if(!MAL_ID){ document.getElementById('animeHero').innerHTML='<p style="color:var(--text3)">Anime not found.</p>'; return; }
+  try{
+    const d = await Jikan.animeById(MAL_ID);
+    animeData = d.data;
+    renderHero(animeData);
+    document.title = `${animeData.title} — AnimeRush`;
+    document.getElementById('pageTitle').textContent = `${animeData.title} — AnimeRush`;
+    document.getElementById('pageDesc').content = animeData.synopsis?.slice(0,160)||'Watch online free on AnimeRush.';
+    document.getElementById('bcTitle').textContent = animeData.title;
+    renderInfoTable(animeData);
+    loadEpisodes();
+    loadRecommendations();
+  }catch(e){
+    document.getElementById('animeHero').innerHTML='<p style="color:var(--accent);padding:40px">Failed to load anime. Please try again.</p>';
+    console.error(e);
+  }
+}
+
+function renderHero(a){
+  const genres = (a.genres||[]).map(g=>`<span class="ai-tag" onclick="location.href='/genre/${g.mal_id}'">${g.name}</span>`).join('');
+  const studios = (a.studios||[]).map(s=>s.name).join(', ')||'Unknown';
+  const sl = slug(a.title);
+  document.getElementById('animeHero').innerHTML = `
+    <div class="anime-cover"><img src="${a.images?.jpg?.large_image_url||''}" alt="${a.title}" onerror="imgFallback(this)"/></div>
+    <div>
+      <div class="ai-type">${a.type||'TV'} · ${a.year||''} · ${a.status||''}</div>
+      <h1 class="ai-title">${a.title}</h1>
+      <div class="ai-alt">${a.title_english||''} ${a.title_japanese?'/ '+a.title_japanese:''}</div>
+      <div class="ai-tags">${genres}</div>
+      <div class="ai-stats">
+        <div class="ai-stat"><div class="ai-stat-n">${a.score||'N/A'}</div><div class="ai-stat-l">Score</div></div>
+        <div class="ai-stat"><div class="ai-stat-n">${a.episodes||'?'}</div><div class="ai-stat-l">Episodes</div></div>
+        <div class="ai-stat"><div class="ai-stat-n">${(a.members||0)>1000?Math.round(a.members/1000)+'K':a.members||'?'}</div><div class="ai-stat-l">Members</div></div>
+        <div class="ai-stat"><div class="ai-stat-n">#${a.rank||'?'}</div><div class="ai-stat-l">Rank</div></div>
+      </div>
+      <div class="ai-desc">${a.synopsis||'No description available.'}</div>
+      <div class="ai-btns">
+        <button class="btn-red" onclick="location.href='/watch/${MAL_ID}/1'">▶ Watch Now</button>
+        <button class="btn-ghost" onclick="location.href='/watch/${MAL_ID}/1?dub=1'">🎙 Dub Version</button>
+        <button class="btn-ghost" onclick="addToList(${MAL_ID})">+ My List</button>
+      </div>
+    </div>`;
+}
+
+function renderInfoTable(a){
+  const rows = [
+    ['Japanese','title_japanese'],['Synonyms','title_synonyms'],
+    ['Type','type'],['Episodes','episodes'],['Status','status'],
+    ['Aired','aired.string'],['Duration','duration'],
+    ['Rating','rating'],['Score','score'],['Rank','rank'],
+    ['Popularity','popularity'],['Studios','studios'],
+    ['Source','source'],['Season','season'],
+  ];
+  document.getElementById('infoTable').innerHTML = rows.map(([label,key])=>{
+    let val = key.split('.').reduce((o,k)=>o?.[k],a);
+    if(Array.isArray(val)) val = val.map(x=>x.name||x).join(', ');
+    if(!val||val==='null') return '';
+    return `<tr><td>${label}</td><td>${val}</td></tr>`;
+  }).join('');
+}
+
+async function loadEpisodes(){
+  const el = document.getElementById('epGrid');
+  el.innerHTML = '<p style="color:var(--text3);padding:20px">Loading episodes...</p>';
+  try{
+    let collected = [];
+    let pg = 1;
+    // Load first page
+    const d = await Jikan.episodes(MAL_ID, pg);
+    collected = d.data||[];
+    epTotalPages = d.pagination?.last_visible_page||1;
+
+    // If anime has declared episode count, load all pages silently
+    const totalEp = animeData?.episodes||0;
+    if(totalEp>100 && epTotalPages>1){
+      // load remaining pages in bg
+      for(let p=2;p<=Math.min(epTotalPages,10);p++){
+        await sleep(400);
+        const more = await Jikan.episodes(MAL_ID, p);
+        collected = collected.concat(more.data||[]);
+      }
+    }
+
+    allEpisodes = collected;
+    renderEpGrid(allEpisodes);
+    document.getElementById('epCount').textContent = `${allEpisodes.length} Episode${allEpisodes.length!==1?'s':''} available`;
+  }catch(e){
+    // Fallback: generate episode buttons from anime.episodes count
+    const n = animeData?.episodes||0;
+    if(n>0){
+      allEpisodes = Array.from({length:n},(_,i)=>({mal_id:i+1,title:`Episode ${i+1}`,aired:null}));
+      renderEpGrid(allEpisodes);
+      document.getElementById('epCount').textContent = `${n} Episodes`;
+    } else {
+      el.innerHTML='<p style="color:var(--text3);padding:20px">Episodes not listed. Try watching directly.</p>';
+    }
+  }
+}
+
+function renderEpGrid(eps){
+  const el = document.getElementById('epGrid');
+  if(!eps.length){ el.innerHTML='<p style="color:var(--text3);padding:20px">No episodes found.</p>'; return; }
+  // Sort
+  const sort = document.getElementById('epSort')?.value||'asc';
+  const list = sort==='desc'?[...eps].reverse():eps;
+  // Search filter
+  const q = (document.getElementById('epSearch')?.value||'').toLowerCase();
+  const filtered = q ? list.filter(e=>(e.mal_id+'').includes(q)||(e.title||'').toLowerCase().includes(q)) : list;
+  el.innerHTML = filtered.map(e=>{
+    const epN = e.mal_id||e.episode||'?';
+    return `<div class="ep-num-btn" onclick="location.href='/watch/${MAL_ID}/${epN}'">${epN}</div>`;
+  }).join('');
+}
+
+function filterEps(){ renderEpGrid(allEpisodes); }
+
+async function loadChars(){
+  charsLoaded = true;
+  const el = document.getElementById('charsGrid');
+  el.innerHTML = '<p style="color:var(--text3);padding:20px">Loading...</p>';
+  try{
+    const d = await Jikan.get(`/anime/${MAL_ID}/characters`);
+    const list = (d.data||[]).slice(0,24);
+    el.innerHTML = list.map(c=>`
+      <div class="char-card">
+        <img class="char-img" src="${c.character?.images?.jpg?.image_url||''}" alt="${c.character?.name}" loading="lazy" onerror="imgFallback(this)"/>
+        <div class="char-info">
+          <div class="char-name">${c.character?.name}</div>
+          <div class="char-role">${c.role}</div>
+        </div>
+      </div>`).join('');
+  }catch(e){ el.innerHTML='<p style="color:var(--text3);padding:20px">Failed to load characters.</p>'; }
+}
+
+async function loadRelated(){
+  relatedLoaded = true;
+  const el = document.getElementById('relatedGrid');
+  el.innerHTML = '<p style="color:var(--text3);padding:20px">Loading...</p>';
+  try{
+    const d = await Jikan.recommendations(MAL_ID);
+    const list = (d.data||[]).slice(0,12).map(r=>r.entry);
+    el.innerHTML = list.map(a=>makeAnimeCard(a,'jikan')).join('');
+  }catch(e){ el.innerHTML='<p style="color:var(--text3);padding:20px">Not available.</p>'; }
+}
+
+async function loadRecommendations(){
+  const el = document.getElementById('recoGrid');
+  el.innerHTML = skeletonCards(6);
+  try{
+    const d = await Jikan.recommendations(MAL_ID);
+    const list = (d.data||[]).slice(0,6).map(r=>r.entry);
+    el.innerHTML = list.map(a=>makeAnimeCard(a,'jikan')).join('');
+  }catch(e){ el.innerHTML=''; }
+}
+
+function skeletonCards(n){
+  return Array(n).fill(`<div class="skel-card"><div class="skel-thumb skeleton" style="padding-bottom:148%"></div><div class="skel-line skeleton"></div><div class="skel-line short skeleton"></div></div>`).join('');
+}
+
+function addToList(id){ showToast('Added to My List! (Login coming soon)'); }
+
+init();
+</script>
+</body>
+</html>

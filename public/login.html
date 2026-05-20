@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Login — AnimeRush</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.auth-wrap{
+  min-height:80vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+}
+.auth-box{
+  width:100%;
+  max-width:420px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:28px;
+}
+.auth-box h1{
+  font-family:'Rajdhani',sans-serif;
+  font-size:34px;
+  margin-bottom:18px;
+}
+.auth-box input{
+  width:100%;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  color:var(--text);
+  padding:13px;
+  border-radius:10px;
+  margin-bottom:12px;
+  outline:none;
+}
+.auth-box button{
+  width:100%;
+  background:var(--accent);
+  color:#fff;
+  border:0;
+  padding:13px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.auth-switch{
+  margin-top:14px;
+  font-size:13px;
+  color:var(--text3);
+  text-align:center;
+}
+.auth-switch span{
+  color:var(--accent);
+  cursor:pointer;
+  font-weight:700;
+}
+</style>
+</head>
+
+<body>
+<div id="navbar"></div>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+    <h1 id="authTitle">Login</h1>
+
+    <input type="text" id="name" placeholder="Your name" style="display:none">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="handleAuth()" id="authBtn">Login</button>
+
+    <div class="auth-switch">
+      <span onclick="toggleAuth()" id="switchText">Create new account</span>
+    </div>
+  </div>
+</div>
+
+<footer id="footer"></footer>
+
+<script src="app.js"></script>
+<script>
+let isSignup = false;
+
+function toggleAuth(){
+  isSignup = !isSignup;
+
+  document.getElementById("authTitle").textContent = isSignup ? "Create Account" : "Login";
+  document.getElementById("authBtn").textContent = isSignup ? "Sign Up" : "Login";
+  document.getElementById("switchText").textContent = isSignup ? "Already have account? Login" : "Create new account";
+  document.getElementById("name").style.display = isSignup ? "block" : "none";
+}
+
+function handleAuth(){
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if(!email || !password){
+    alert("Enter email and password");
+    return;
+  }
+
+  if(isSignup){
+    if(!name){
+      alert("Enter your name");
+      return;
+    }
+
+    const user = {name,email,password};
+    localStorage.setItem("ar_user_" + email, JSON.stringify(user));
+    localStorage.setItem("ar_current_user", email);
+
+    location.href = "profile.html";
+  }else{
+    const saved = localStorage.getItem("ar_user_" + email);
+
+    if(!saved){
+      alert("Account not found");
+      return;
+    }
+
+    const user = JSON.parse(saved);
+
+    if(user.password !== password){
+      alert("Wrong password");
+      return;
+    }
+
+    localStorage.setItem("ar_current_user", email);
+    location.href = "profile.html";
+  }
+}
+</script>
+</body>
+</html>
