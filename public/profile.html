@@ -54,6 +54,38 @@
   cursor:pointer;
   font-weight:700;
 }
+
+.auth-wrap{
+  min-height:80vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+}
+
+/* existing css */
+
+.google-btn{
+  width:100%;
+  margin-top:12px;
+  background:#fff;
+  color:#111;
+  border:0;
+  border-radius:10px;
+  padding:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.google-btn img{
+  width:18px;
+  height:18px;
+}
+
 </style>
 </head>
 
@@ -86,8 +118,23 @@ if(!email){
   location.href = "login.html";
 }
 
-const user = JSON.parse(localStorage.getItem("ar_user_" + email) || "{}");
-document.getElementById("profileName").textContent = "Hi, " + (user.name || "User");
+const gUser = JSON.parse(localStorage.getItem("ar_google_user"));
+
+if(gUser){
+
+  document.getElementById("profileName").textContent =
+    "Hi, " + gUser.name;
+
+}else{
+
+  const user = JSON.parse(
+    localStorage.getItem("ar_user_" + email) || "{}"
+  );
+
+  document.getElementById("profileName").textContent =
+    "Hi, " + (user.name || "User");
+
+}
 
 function loadHistory(){
   const key = "ar_history_" + email;

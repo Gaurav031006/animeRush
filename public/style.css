@@ -1050,3 +1050,49 @@ img,iframe,video{
     flex:1;
   }
 }
+
+/* ===== NAVBAR + AD BANNER OVERLAP FIX ===== */
+
+#navbar{
+  position:sticky;
+  top:0;
+  z-index:9999;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-inner{
+  min-height:74px;
+  display:flex;
+  align-items:center;
+}
+
+.ad-slot,
+.ad-728,
+.ad-resp{
+  position:relative;
+  z-index:1;
+}
+
+body{
+  padding-top:0 !important;
+}
+
+#navbar + div{
+  margin-top:0 !important;
+  clear:both;
+}
+
+@media(max-width:768px){
+  #navbar{
+    position:relative;
+  }
+
+  .nav-inner{
+    min-height:auto;
+  }
+
+  #navbar + div{
+    margin-top:0 !important;
+  }
+}
