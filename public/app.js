@@ -424,8 +424,7 @@ function renderNavbar(){
     placeholder="Search anime or manga..."
     id="navSearch">
 
-  <button type="button"
-    onclick="navDoSearch()">🔍</button>
+  <button type="button" onclick="navDoSearch()">⌕</button>
 </div>
 
 <div id="navAuth"></div>
