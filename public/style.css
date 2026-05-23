@@ -1421,3 +1421,39 @@ body{
   max-height:18px !important;
   object-fit:contain !important;
 }
+
+/* ===== SEARCH BUTTON FINAL FIX ===== */
+
+.search-box{
+  display:flex !important;
+  align-items:center !important;
+  height:44px !important;
+  overflow:hidden !important;
+}
+
+.search-box input{
+  height:44px !important;
+}
+
+.search-box button{
+  width:52px !important;
+  min-width:52px !important;
+  height:44px !important;
+  padding:0 !important;
+  border-radius:0 10px 10px 0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:18px !important;
+  line-height:1 !important;
+  background:var(--accent) !important;
+  color:#fff !important;
+}
+
+.search-box button::before{
+  content:"🔍";
+}
+
+.search-box button{
+  font-size:0 !important;
+}
