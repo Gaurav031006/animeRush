@@ -1398,3 +1398,26 @@ body{
   line-height:1 !important;
   white-space:nowrap !important;
 }
+
+.search-box button,
+.dual-search button{
+  width:46px !important;
+  min-width:46px !important;
+  height:44px !important;
+  padding:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  font-size:16px !important;
+  line-height:1 !important;
+  overflow:hidden !important;
+}
+
+.search-box button img,
+.dual-search button img{
+  width:18px !important;
+  height:18px !important;
+  max-width:18px !important;
+  max-height:18px !important;
+  object-fit:contain !important;
+}
