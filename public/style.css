@@ -1387,3 +1387,14 @@ body{
 .nav-login-btn:active{
   transform:scale(.97);
 }
+
+.nav-login-btn{
+  min-width:auto !important;
+  width:auto !important;
+  height:44px !important;
+  padding:0 18px !important;
+  border-radius:12px !important;
+  font-size:14px !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
+}
