@@ -411,7 +411,6 @@ function renderNavbar(){
         <a href="schedule.html">Schedule</a>
         <a href="manga.html">Manga</a>
         <a href="genre.html">Genre</a>
-        <a href="profile.html" id="profileLink">Profile</a>
         <a href="#" id="navRandom">Random</a>
       </nav>
 
@@ -421,12 +420,19 @@ function renderNavbar(){
     <option value="manga">Manga</option>
   </select>
 
-  <input type="text" placeholder="Search anime or manga..." id="navSearch">
+  <input type="text"
+    placeholder="Search anime or manga..."
+    id="navSearch">
 
-  <button type="button" onclick="navDoSearch()">🔍</button>
+  <button type="button"
+    onclick="navDoSearch()">🔍</button>
 </div>
 
-      <button class="hamburger" type="button" onclick="toggleMobileNav()">☰</button>
+<div id="navAuth"></div>
+
+<button class="hamburger"
+  type="button"
+  onclick="toggleMobileNav()">☰</button>
 
     </div>
   `;
@@ -439,6 +445,37 @@ function renderNavbar(){
     e.preventDefault();
     goRandom();
   });
+
+  const navAuth = document.getElementById("navAuth");
+  const gUser = JSON.parse(localStorage.getItem("ar_google_user"));
+
+  if(gUser){
+    navAuth.innerHTML = `
+      <div class="nav-user-dropdown">
+        <div class="nav-user-top" onclick="toggleUserMenu()">
+          <img src="${gUser.photo}" alt="">
+          <span>${gUser.name.split(" ")[0]}</span>
+        </div>
+
+        <div class="nav-user-menu" id="userMenu">
+          <a href="profile.html">Profile</a>
+          <a href="profile.html">Continue Watching</a>
+          <button onclick="logoutGoogle()">Logout</button>
+        </div>
+      </div>
+    `;
+  }else{
+    navAuth.innerHTML = `
+      <button class="nav-login-btn"
+        onclick="location.href='login.html'">
+        Sign In
+      </button>
+    `;
+  }
+}
+
+function toggleUserMenu(){
+  document.getElementById("userMenu")?.classList.toggle("active");
 }
 
 function navDoSearch(){
@@ -459,23 +496,7 @@ function toggleMobileNav(){
 
   if(!n) return;
 
-  if(n.style.display === 'flex'){
-    n.style.display = '';
-  }else{
-    n.style.cssText = `
-      display:flex;
-      flex-direction:column;
-      position:absolute;
-      top:64px;
-      left:0;
-      right:0;
-      background:var(--bg);
-      border-bottom:1px solid var(--border);
-      padding:10px 16px;
-      gap:4px;
-      z-index:100;
-    `;
-  }
+  n.classList.toggle("mobile-open");
 }
 
 async function goRandom(){
@@ -619,3 +640,9 @@ document.addEventListener('DOMContentLoaded', function(){
     renderFooter();
   }
 });
+
+function toggleUserMenu(){
+  document
+    .getElementById("userMenu")
+    ?.classList.toggle("active");
+}

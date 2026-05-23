@@ -8,12 +8,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_REAL_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAn407A-3HinKNoduK6Cn5UaE6VjxQPgGE",
+  authDomain: "animerush-offical.firebaseapp.com",
+  projectId: "animerush-offical",
+  storageBucket: "animerush-offical.firebasestorage.app",
+  messagingSenderId: "845739764672",
+  appId: "1:845739764672:web:88f726689cc3dc332bb625"
 };
 
 const app = initializeApp(firebaseConfig);

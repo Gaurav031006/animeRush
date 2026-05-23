@@ -1096,3 +1096,294 @@ body{
     margin-top:0 !important;
   }
 }
+
+/* ===== MOBILE NAVBAR + ADSENSE OVERLAP FIX ===== */
+
+@media(max-width:768px){
+
+  body{
+    padding-top:0 !important;
+    overflow-x:hidden !important;
+  }
+
+  #navbar{
+    position:relative !important;
+    height:auto !important;
+    min-height:0 !important;
+    overflow:visible !important;
+    z-index:9999 !important;
+  }
+
+  .nav-inner{
+    height:auto !important;
+    min-height:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:stretch !important;
+    gap:12px !important;
+    padding:14px 16px !important;
+  }
+
+  .nav-links{
+    position:static !important;
+    order:2 !important;
+    width:100% !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    gap:16px !important;
+    padding:6px 0 !important;
+    margin:0 !important;
+  }
+
+  .nav-right{
+    order:3 !important;
+    width:100% !important;
+    margin:0 !important;
+  }
+
+  .search-box{
+    width:100% !important;
+    height:46px !important;
+  }
+
+  .top-ad-wrap,
+  #navbar + div{
+    position:relative !important;
+    display:block !important;
+    clear:both !important;
+    margin-top:0 !important;
+    padding:12px 10px !important;
+    z-index:1 !important;
+  }
+
+  .ad-728,
+  .ad-slot{
+    max-width:100% !important;
+    width:100% !important;
+    min-height:90px !important;
+    height:auto !important;
+  }
+}
+
+/* ===== NAVBAR ALWAYS VISIBLE FIX ===== */
+
+#navbar{
+  position:sticky !important;
+  top:0 !important;
+  z-index:99999 !important;
+  width:100% !important;
+  background:#07080d !important;
+  border-bottom:1px solid var(--border) !important;
+}
+
+.nav-inner{
+  max-width:1400px !important;
+  margin:0 auto !important;
+  min-height:78px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:24px !important;
+}
+
+/* ===== SIDEBAR AD FIT FIX ===== */
+
+.sidebar .widget{
+  overflow:hidden !important;
+}
+
+.sidebar .ad-slot,
+.sidebar .ad-300{
+  width:100% !important;
+  max-width:100% !important;
+  min-height:250px !important;
+  height:auto !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.ad-300{
+  max-width:300px !important;
+  margin:0 auto !important;
+}
+
+/* ===== NAVBAR FINAL CLEAN FIX ===== */
+
+body{
+  padding-top:0 !important;
+}
+
+#navbar{
+  position:sticky !important;
+  top:0 !important;
+  z-index:99999 !important;
+  width:100% !important;
+  min-height:78px !important;
+  background:#07080d !important;
+  border-bottom:1px solid var(--border) !important;
+  display:block !important;
+}
+
+#navbar:empty{
+  display:none !important;
+}
+
+.nav-inner{
+  min-height:78px !important;
+  max-width:1400px !important;
+  margin:0 auto !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:24px !important;
+  padding:0 24px !important;
+}
+
+/* ===== FINAL MOBILE NAV + LOGIN PAGE FIX ===== */
+
+.nav-login-btn{
+  background:var(--accent) !important;
+  color:#fff !important;
+  border:0 !important;
+  padding:10px 16px !important;
+  border-radius:10px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+}
+
+.hamburger{
+  display:none;
+  background:none;
+  border:0;
+  color:#fff;
+  font-size:28px;
+  cursor:pointer;
+}
+
+.auth-wrap{
+  min-height:calc(100vh - 90px) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:40px 16px !important;
+}
+
+@media(max-width:768px){
+
+  #navbar{
+    position:relative !important;
+    height:auto !important;
+    min-height:auto !important;
+    padding:0 !important;
+  }
+
+  .nav-inner{
+    height:auto !important;
+    min-height:auto !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    gap:14px !important;
+    padding:16px !important;
+  }
+
+  .logo{
+    font-size:26px !important;
+    text-align:center !important;
+  }
+
+  .hamburger{
+    display:block !important;
+    order:2;
+  }
+
+  .nav-links{
+    order:3 !important;
+    width:100% !important;
+    display:none !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:0 !important;
+    background:#090a10 !important;
+    border:1px solid var(--border) !important;
+    border-radius:14px !important;
+    padding:10px 0 !important;
+    margin:0 !important;
+    position:static !important;
+  }
+
+  .nav-links.mobile-open{
+    display:flex !important;
+  }
+
+  .nav-links a{
+    width:100% !important;
+    padding:14px 18px !important;
+    border-bottom:1px solid var(--border) !important;
+  }
+
+  .nav-links a:last-child{
+    border-bottom:0 !important;
+  }
+
+  .dual-search,
+  .search-box{
+    order:4 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  #navAuth{
+    order:1 !important;
+    width:auto !important;
+  }
+
+  .nav-login-btn{
+    display:block !important;
+    margin:0 auto !important;
+  }
+
+  .auth-wrap{
+    min-height:auto !important;
+    padding:24px 14px 40px !important;
+    align-items:flex-start !important;
+  }
+
+  .auth-box{
+    width:100% !important;
+    max-width:520px !important;
+    margin:0 auto !important;
+  }
+}
+
+/* ===== SIGN IN BUTTON FIX ===== */
+
+#navAuth{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.nav-login-btn{
+  background:linear-gradient(135deg,#ff365f,#ff4d4d) !important;
+  color:#fff !important;
+  border:none !important;
+  outline:none !important;
+  padding:10px 18px !important;
+  border-radius:12px !important;
+  font-size:14px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+  transition:.25s ease !important;
+  box-shadow:0 4px 14px rgba(255,70,90,.25) !important;
+}
+
+.nav-login-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(255,70,90,.35) !important;
+}
+
+.nav-login-btn:active{
+  transform:scale(.97);
+}
