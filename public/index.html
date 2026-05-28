@@ -10,13 +10,14 @@ content="Discover trending anime, official trailers, episode guides, reviews, an
 <meta name="keywords"
 content="anime reviews, anime trailers, anime episode guide, anime recommendations, Crunchyroll anime, Netflix anime, anime news, trending anime, AnimeRush"/>
 <meta name="robots" content="index,follow"/>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2530505129187856"
+     crossorigin="anonymous"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div id="navbar"></div>
-
 <section class="hero">
   <div class="hero-bg"></div>
 
@@ -55,7 +56,20 @@ watch platforms — all in one place.
     </div>
   </div>
 </section>
+<!-- ADSENSE -->
 
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2530505129187856"
+     data-ad-slot="YOUR_SLOT_ID"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+<section class="currently-airing">
 <div class="page-wrap">
   <div class="has-sidebar">
 
@@ -110,10 +124,6 @@ watch platforms — all in one place.
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px" id="merchGrid"></div>
         <p style="font-size:11px;color:var(--text3);margin-top:10px">* Affiliate links — we may earn a commission at no extra cost to you.</p>
       </section>
-
-      <div style="padding:16px 0;text-align:center">
-        <div class="ad-slot ad-resp">Advertisement — AdSense In-Article</div>
-      </div>
     </div>
 
     <aside class="sidebar">
@@ -138,6 +148,16 @@ watch platforms — all in one place.
 
   </div>
 </div>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2530505129187856"
+     data-ad-slot="YOUR_SLOT_ID"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
 <footer id="footer"></footer>
 <div id="toast" class="toast"></div>
@@ -338,7 +358,7 @@ function loadMerch(){
 
   await loadSection('airingGrid', () => Jikan.topAnime(1,'airing'));
   await loadSection('seasonGrid', () => Jikan.seasonNow());
-  await loadSection('topGrid', () => Jikan.topAnime(1,'byrating'));
+  await loadSection('topGrid', () => Jikan.topAnime(1,'favorite'));
   await loadSection('moviesGrid', () => Jikan.movies());
 
   loadSidebar();

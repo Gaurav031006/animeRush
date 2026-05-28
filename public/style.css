@@ -1457,3 +1457,41 @@ body{
 .search-box button{
   font-size:0 !important;
 }
+
+/* ===== FORCE REMOVE TOP GAP ===== */
+
+html,
+body{
+  margin:0 !important;
+  padding:0 !important;
+}
+
+body{
+  overflow-x:hidden;
+}
+
+#navbar{
+  position:sticky !important;
+  top:0 !important;
+  z-index:99999 !important;
+  width:100% !important;
+  margin:0 !important;
+}
+
+.hero{
+  margin-top:0 !important;
+  padding-top:30px !important;
+}
+
+.hero-wrap,
+.page-wrap,
+.main-wrap,
+.home-wrap,
+.container{
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+
+section:first-of-type{
+  margin-top:0 !important;
+}
